@@ -1,106 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .game-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 24px;
+  color: #fff;
 }
 
-.game-header {
-  text-align: center;
-  color: white;
-  margin-bottom: 20px;
+.game-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(12,18,34,0.55), rgba(12,18,34,0.35));
 }
 
-.game-header h2 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+.game-header,
+.game-stage,
+.game-footer { position: relative; z-index: 1; }
+
+.game-header { text-align: center; margin-bottom: 18px; }
+
+.retro-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  color: #f9f871;
+  text-shadow: 4px 4px 0 #2a2a2a, 0 0 10px rgba(249,248,113,.35);
+  margin: 0 0 10px;
 }
 
-.game-header p {
-  font-size: 1.2rem;
-  opacity: 0.9;
+.retro-sub {
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(0.7rem, 2vw, 1rem);
+  color: #e8f3ff;
+  text-shadow: 2px 2px 0 #1b1b1b;
+  opacity: .95;
 }
 
-.game-canvas {
-  border-radius: 15px;
+.game-stage { margin: 10px 0 6px; }
+
+/* frame around the game, not used for Phaser scaling */
+.frame {
+  padding: 8px;
+  background: #0a0f1e;
+  box-shadow:
+    0 0 0 4px #1f2a44,
+    0 0 0 12px #0b1326,
+    0 16px 40px rgba(0,0,0,.5);
+}
+
+/* the actual parent for Phaser */
+.canvas-holder {
+  width: min(92vw, 960px);
+  aspect-ratio: 4 / 3;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  margin-bottom: 20px;
-  max-width: 800px;
-}
-
-.game-canvas:fullscreen {
-  max-width: 100%;
-  border-radius: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: #000;
 }
 
+.canvas-holder:fullscreen {
+  width: 100vw;
+  height: 100vh; /* aspect ratio ignored in fullscreen */
+  aspect-ratio: auto;
+}
+
+.canvas-holder > canvas {
+  display: block;
+}
+
 .game-footer {
-  margin-top: 20px;
+  margin-top: 16px;
   display: flex;
-  gap: 15px;
+  gap: 12px;
   justify-content: center;
 }
 
-.fullscreen-button {
-  background-color: #4CAF50;
-  color: white;
-  border: 2px solid #45a049;
-  padding: 12px 30px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 25px;
+.pixel-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.85rem;
+  padding: 14px 18px;
+  border: 0;
+  color: #0b1a2a;
+  background: #ffd34d;
+  box-shadow: 0 6px 0 #a37a00, 0 6px 12px rgba(0,0,0,0.35);
   cursor: pointer;
-  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
-
-.fullscreen-button:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-}
-
-.fullscreen-button:active {
-  transform: translateY(0);
-}
-
-.back-button {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid white;
-  padding: 12px 30px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.back-button:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.back-button:active {
-  transform: translateY(0);
-}
+.pixel-button:active { transform: translateY(4px); box-shadow: 0 2px 0 #a37a00, 0 2px 8px rgba(0,0,0,0.25); }
+.pixel-button.primary { background: #7cf37c; box-shadow: 0 6px 0 #2c7a2c, 0 6px 12px rgba(0,0,0,0.35); }
+.pixel-button.primary:active { box-shadow: 0 2px 0 #2c7a2c, 0 2px 8px rgba(0,0,0,0.25); }
+.pixel-button.secondary { background: #ffd34d; }
 
 @media (max-width: 850px) {
-  .game-canvas canvas {
-    max-width: 100%;
-    height: auto !important;
-  }
-
-  .game-header h2 {
-    font-size: 2rem;
-  }
+  .game-canvas canvas { max-width: 100%; height: auto !important; }
 }

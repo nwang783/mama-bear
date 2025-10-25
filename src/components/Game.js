@@ -72,17 +72,29 @@ function Game() {
   };
 
   return (
-    <div className="game-container">
+    <div
+      className="game-container"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/assets/hero-background.png)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       <div className="game-header">
-        <h2>🐻 Mama Bear Learning Lobby</h2>
-        <p>Choose a village to begin your adventure!</p>
+        <h2 className="retro-title">Mama Bear Arcade</h2>
+        <p className="retro-sub">Choose a village to begin your quest</p>
       </div>
-      <div ref={gameRef} className="game-canvas" />
+      <div className="game-stage">
+        <div className="frame">
+          <div ref={gameRef} className="canvas-holder" />
+        </div>
+      </div>
       <div className="game-footer">
-        <button onClick={handleFullscreen} className="fullscreen-button">
+        <button onClick={handleFullscreen} className="pixel-button primary">
           ⛶ Fullscreen
         </button>
-        <button onClick={() => window.location.href = '/'} className="back-button">
+        <button onClick={() => (window.location.href = '/')} className="pixel-button secondary">
           ← Back to Home
         </button>
       </div>

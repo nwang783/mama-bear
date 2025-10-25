@@ -12,41 +12,30 @@ function LandingPage() {
   const handleExtractClick = () => {
     navigate('/extract-questions');
   };
+
   return (
-    <div className="landing-page">
+    <div
+      className="landing-page"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/assets/hero-background.png)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       <div className="hero-section">
-        <h1 className="title">🐻 Mama Bear Learning</h1>
+        <h1 className="title">Mama Bear</h1>
+        <h2 className="title-sub">Learning Quest</h2>
         <p className="subtitle">
-          Turn your educational content into fun, interactive games for your children
-        </p>
-        <p className="description">
-          A free platform where moms can create engaging learning experiences.
-          Explore different villages and master math, finances, and reading!
+          Turn lessons into a retro game adventure for kids
         </p>
         <div className="action-buttons">
-          <button className="play-button" onClick={handlePlayClick}>
-            Start Learning Adventure
+          <button className="pixel-button primary" onClick={handlePlayClick}>
+            Start Game
           </button>
-          <button className="extract-button" onClick={handleExtractClick}>
-            🤖 Extract Questions from PDF
+          <button className="pixel-button secondary" onClick={handleExtractClick}>
+            Extract Questions from PDF
           </button>
-        </div>
-      </div>
-      <div className="features">
-        <div className="feature">
-          <span className="feature-icon">📚</span>
-          <h3>Reading Village</h3>
-          <p>Build literacy skills through interactive stories</p>
-        </div>
-        <div className="feature">
-          <span className="feature-icon">🔢</span>
-          <h3>Math Village</h3>
-          <p>Make numbers fun with engaging challenges</p>
-        </div>
-        <div className="feature">
-          <span className="feature-icon">💰</span>
-          <h3>Finance Village</h3>
-          <p>Learn money skills early in life</p>
         </div>
       </div>
     </div>
