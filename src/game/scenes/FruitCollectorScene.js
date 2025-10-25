@@ -48,7 +48,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
 
   create() {
     // Set world bounds
-    this.physics.world.setBounds(0, 0, 800, 600);
+    this.physics.world.setBounds(0, 0, 800, 450);
 
     // Create background
     this.createBackground();
@@ -63,7 +63,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.displayQuestion();
 
     // Setup camera
-    this.cameras.main.setBounds(0, 0, 800, 600);
+    this.cameras.main.setBounds(0, 0, 800, 450);
     this.cameras.main.setZoom(1.0); // Normal zoom
 
     // Setup pause key
@@ -82,7 +82,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     // Create tiled grass background
     const tileSize = 16;
     const tilesX = Math.ceil(800 / tileSize);
-    const tilesY = Math.ceil(600 / tileSize);
+    const tilesY = Math.ceil(450 / tileSize);
 
     for (let x = 0; x < tilesX; x++) {
       for (let y = 0; y < tilesY; y++) {
@@ -105,7 +105,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     // Add some decorative trees
     for (let i = 0; i < 8; i++) {
       const treeX = Phaser.Math.Between(50, 750);
-      const treeY = Phaser.Math.Between(50, 450);
+      const treeY = Phaser.Math.Between(50, 350);
       const treeType = Math.random() < 0.5 ? 'tile_0004' : 'tile_0005';
       const tree = this.add.image(treeX, treeY, treeType);
       tree.setDepth(-10);
@@ -252,7 +252,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
   createPlayer() {
     // Use the Player class like village scenes do
     // Start player in the middle area, clearly visible on screen
-    this.player = new Player(this, 400, 400);
+    this.player = new Player(this, 400, 300);
     this.player.setDepth(200);
     
     // Ensure player stays within bounds (already handled by Player class)
@@ -261,29 +261,29 @@ export default class FruitCollectorScene extends Phaser.Scene {
 
   createPauseMenu() {
     // Create pause menu container (hidden by default)
-    this.pauseMenuContainer = this.add.container(400, 300);
+    this.pauseMenuContainer = this.add.container(400, 225);
     this.pauseMenuContainer.setDepth(5000); // Very high depth to be above everything
     this.pauseMenuContainer.setScrollFactor(0);
     this.pauseMenuContainer.setVisible(false);
     
     console.log('Pause menu created');
 
-    // Create stone tile background (using Kenney tiles) - extra large and even taller
-    this.createStoneBackground(this.pauseMenuContainer, 0, 0, 22, 29);
+    // Create stone tile background (using Kenney tiles) - sized for 450px canvas height
+    this.createStoneBackground(this.pauseMenuContainer, 0, 0, 20, 22);
 
     // Pause title
-    const pauseTitle = this.add.text(0, -150, 'PAUSED', {
-      fontSize: '48px',
+    const pauseTitle = this.add.text(0, -130, 'PAUSED', {
+      fontSize: '40px',
       fontFamily: 'Arial',
       color: '#ffdd44',
       stroke: '#000000',
-      strokeThickness: 6
+      strokeThickness: 5
     });
     pauseTitle.setOrigin(0.5);
     this.pauseMenuContainer.add(pauseTitle);
 
     // Current stats
-    const statsText = this.add.text(0, -70, '', {
+    const statsText = this.add.text(0, -60, '', {
       fontSize: '18px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -297,7 +297,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.pauseStatsText = statsText;
 
     // Resume button
-    const resumeButton = this.add.text(0, 30, 'Resume (ESC)', {
+    const resumeButton = this.add.text(0, 20, 'Resume (ESC)', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -318,7 +318,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.pauseMenuContainer.add(resumeButton);
 
     // Restart button
-    const restartButton = this.add.text(0, 105, 'Restart Game', {
+    const restartButton = this.add.text(0, 85, 'Restart Game', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -339,7 +339,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.pauseMenuContainer.add(restartButton);
 
     // Back to Village button
-    const backButton = this.add.text(0, 180, 'Back to Village', {
+    const backButton = this.add.text(0, 150, 'Back to Village', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -467,7 +467,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     const letters = ['A', 'B', 'C', 'D'];
     const spacing = 150;
     const startX = 175; // Start position (centered: 400 - (3*150/2) = 175)
-    const y = 370; // Position fruits lower for better visibility
+    const y = 300; // Position fruits at a good height for 450px canvas
 
     this.currentQuestion.choices.forEach((choice, index) => {
       const x = startX + index * spacing;
@@ -682,26 +682,26 @@ export default class FruitCollectorScene extends Phaser.Scene {
     const totalQuestions = this.questions.length;
     const percentage = totalQuestions > 0 ? Math.round((questionsAnswered / totalQuestions) * 100) : 0;
 
-    // Create game over panel with stone background (same size as pause menu)
-    const gameOverContainer = this.add.container(400, 300);
+    // Create game over panel with stone background (sized for 450px canvas)
+    const gameOverContainer = this.add.container(400, 225);
     gameOverContainer.setDepth(2000);
-    this.createStoneBackground(gameOverContainer, 0, 0, 22, 29);
+    this.createStoneBackground(gameOverContainer, 0, 0, 20, 22);
 
     // Title
     const titleText = completed ? 'Completed!' : 'Game Over!';
     const titleColor = completed ? '#44ff44' : '#ff4444';
-    const title = this.add.text(0, -150, titleText, {
-      fontSize: '48px',
+    const title = this.add.text(0, -130, titleText, {
+      fontSize: '40px',
       fontFamily: 'Arial',
       color: titleColor,
       stroke: '#000000',
-      strokeThickness: 6
+      strokeThickness: 5
     });
     title.setOrigin(0.5);
     gameOverContainer.add(title);
 
     // Stats
-    const stats = this.add.text(0, -70,
+    const stats = this.add.text(0, -60,
       `Final Score: ${this.score}\nQuestions Answered: ${questionsAnswered}/${totalQuestions}\nAccuracy: ${percentage}%`, 
       {
         fontSize: '18px',
@@ -717,7 +717,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     gameOverContainer.add(stats);
 
     // Return button
-    const returnButton = this.add.text(0, 30, 'Return to Village', {
+    const returnButton = this.add.text(0, 20, 'Return to Village', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -744,7 +744,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     gameOverContainer.add(returnButton);
 
     // Retry button
-    const retryButton = this.add.text(0, 105, 'Play Again', {
+    const retryButton = this.add.text(0, 85, 'Play Again', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
