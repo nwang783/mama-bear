@@ -19,8 +19,8 @@ export default class Village extends Phaser.GameObjects.Container {
     this.createBuilding();
     this.createInteractionZone();
 
-    // Depth for layering
-    this.setDepth(50);
+    // Depth for layering - higher than trees (which are at depth 5)
+    this.setDepth(150);
 
     // Interaction state
     this.isPlayerNearby = false;
@@ -56,44 +56,43 @@ export default class Village extends Phaser.GameObjects.Container {
       }
     }
 
-    // Add emoji sign above building
+    // Add emoji sign above building (smaller, more integrated)
     const emoji = this.scene.add.text(
       0,
-      -(buildingHeight/2) * tileSize - 20,
+      -(buildingHeight/2) * tileSize - 18,
       this.villageConfig.emoji,
-      { fontSize: '32px' }
+      { 
+        fontSize: '24px',
+        resolution: 2 // Sharper rendering
+      }
     );
     emoji.setOrigin(0.5);
+    emoji.setDepth(200); // Very high depth to ensure it's above everything
     building.add(emoji);
 
-    // Add village name plate below building
+    // Add village name plate below building with pixel-art styling
     const namePlate = this.scene.add.text(
       0,
-      (buildingHeight/2) * tileSize + 15,
+      (buildingHeight/2) * tileSize + 12,
       this.villageConfig.name,
       {
-        fontSize: '16px',
-        fontFamily: 'Arial',
+        fontSize: '12px',
+        fontFamily: 'monospace', // More pixel-art like
         color: '#ffffff',
         backgroundColor: '#000000',
-        padding: { x: 10, y: 5 }
+        padding: { x: 8, y: 4 },
+        resolution: 2 // Sharper rendering
       }
     );
     namePlate.setOrigin(0.5);
+    namePlate.setDepth(200); // Very high depth to ensure it's above everything
     building.add(namePlate);
-
-    // Add path tiles in front of building
-    for (let i = -1; i <= 1; i++) {
-      const pathTile = this.scene.add.image(
-        i * tileSize,
-        (buildingHeight/2) * tileSize + tileSize,
-        'tile_0016' // Stone path tile
-      );
-      building.add(pathTile);
-    }
 
     // Add the building container to this village container
     this.add(building);
+    
+    // Set higher depth for the building so text is visible
+    building.setDepth(100);
 
     // Store references
     this.buildingContainer = building;

@@ -71,26 +71,6 @@ export default class WorldScene extends Phaser.Scene {
       }
     }
 
-    // Add some decorative patches using tile_0003 (darker grass or flowers)
-    for (let i = 0; i < 40; i++) {
-      const patchX = Phaser.Math.Between(0, GAME_CONFIG.WORLD.WIDTH - 32);
-      const patchY = Phaser.Math.Between(0, GAME_CONFIG.WORLD.HEIGHT - 32);
-      
-      // Create small patches (2x2 tiles)
-      for (let px = 0; px < 2; px++) {
-        for (let py = 0; py < 2; py++) {
-          const patch = this.add.image(
-            patchX + (px * tileSize), 
-            patchY + (py * tileSize), 
-            'tile_0003'
-          );
-          patch.setOrigin(0, 0);
-          patch.setAlpha(0.7);
-          patch.setDepth(-95);
-        }
-      }
-    }
-
     // Add tree tiles (0004 and 0005) scattered around
     for (let i = 0; i < 60; i++) {
       const treeX = Phaser.Math.Between(tileSize, GAME_CONFIG.WORLD.WIDTH - tileSize);
@@ -100,7 +80,7 @@ export default class WorldScene extends Phaser.Scene {
       if (!this.isNearVillageSpawn(treeX, treeY)) {
         const treeType = Math.random() < 0.5 ? 'tile_0004' : 'tile_0005';
         const tree = this.add.image(treeX, treeY, treeType);
-        tree.setDepth(10);
+        tree.setDepth(5); // Lower depth
       }
     }
   }
