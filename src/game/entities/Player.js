@@ -33,22 +33,19 @@ export default class Player extends Phaser.GameObjects.Container {
   }
 
   createSprite() {
-    // Create player body (circle)
-    const body = this.scene.add.circle(0, 0, GAME_CONFIG.PLAYER.SIZE / 2, GAME_CONFIG.PLAYER.COLOR);
-    body.setStrokeStyle(3, 0x000000);
-
-    // Add bear emoji
-    const bearEmoji = this.scene.add.text(0, 0, '🐻', {
-      fontSize: '36px'
-    });
-    bearEmoji.setOrigin(0.5);
+    // Create player sprite from spritesheet
+    this.sprite = this.scene.add.sprite(0, 0, 'player', 0);
+    this.sprite.setScale(1); // 48x48 pixels at 1x scale
 
     // Add to container
-    this.add([body, bearEmoji]);
+    this.add(this.sprite);
 
-    // Store references
-    this.bodyCircle = body;
-    this.emoji = bearEmoji;
+    // Set initial animation
+    this.sprite.play('idle-down');
+
+    // Track animation state
+    this.currentDirection = 'down';
+    this.isMoving = false;
   }
 
   setupControls() {
@@ -95,21 +92,50 @@ export default class Player extends Phaser.GameObjects.Container {
     // Apply velocity
     this.body.setVelocity(velocityX, velocityY);
 
-    // Visual feedback - slightly tilt when moving
-    if (velocityX !== 0 || velocityY !== 0) {
-      this.bodyCircle.setScale(1.05);
-      
-      // Slight rotation based on direction
-      if (velocityX < 0) {
-        this.emoji.setAngle(-5);
-      } else if (velocityX > 0) {
-        this.emoji.setAngle(5);
+    // Update animations based on movement
+    this.updateAnimation(velocityX, velocityY);
+  }
+
+  updateAnimation(velocityX, velocityY) {
+    const isMoving = velocityX !== 0 || velocityY !== 0;
+
+    if (isMoving) {
+      // Determine direction and play appropriate animation
+      if (Math.abs(velocityY) > Math.abs(velocityX)) {
+        // Vertical movement is dominant
+        if (velocityY < 0) {
+          this.sprite.play('walk-up', true);
+          this.currentDirection = 'up';
+        } else {
+          this.sprite.play('walk-down', true);
+          this.currentDirection = 'down';
+        }
+        this.sprite.setFlipX(false);
       } else {
-        this.emoji.setAngle(0);
+        // Horizontal movement is dominant
+        this.sprite.play('walk-side', true);
+        this.currentDirection = 'side';
+        
+        // Flip sprite based on direction
+        if (velocityX < 0) {
+          this.sprite.setFlipX(true); // Moving left
+        } else {
+          this.sprite.setFlipX(false); // Moving right
+        }
       }
-    } else {
-      this.bodyCircle.setScale(1);
-      this.emoji.setAngle(0);
+      this.isMoving = true;
+    } else if (this.isMoving) {
+      // Just stopped moving
+      this.isMoving = false;
+      
+      // Play idle animation based on last direction
+      if (this.currentDirection === 'up') {
+        this.sprite.play('idle-up');
+      } else if (this.currentDirection === 'side') {
+        this.sprite.play('idle-side');
+      } else {
+        this.sprite.play('idle-down');
+      }
     }
   }
 
