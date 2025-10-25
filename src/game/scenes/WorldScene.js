@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import Player from '../entities/Player';
 import Village from '../entities/Village';
+import CatNPC from '../entities/CatNPC';
 import { GAME_CONFIG } from '../config/gameConfig';
 
 /**
@@ -12,6 +13,7 @@ export default class WorldScene extends Phaser.Scene {
     this.player = null;
     this.villages = [];
     this.nearbyVillage = null;
+    this.cats = [];
   }
 
   create() {
@@ -40,6 +42,9 @@ export default class WorldScene extends Phaser.Scene {
 
     // Setup camera to follow player
     this.setupCamera();
+
+    // Create some wandering cats
+    this.spawnCats(6);
 
     // Listen for village entrance events
     this.events.on('villageEntered', this.handleVillageEntered, this);
@@ -203,6 +208,9 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   update() {
+    // Update cats
+    this.cats.forEach(cat => cat.update());
+
     // Update player
     if (this.player) {
       this.player.update();
@@ -260,6 +268,22 @@ export default class WorldScene extends Phaser.Scene {
       });
     } else {
       console.error(`Unknown village ID: ${villageConfig.id}`);
+    }
+  }
+
+  spawnCats(count = 4) {
+    for (let i = 0; i < count; i++) {
+      // pick a random spot not too close to villages
+      let x, y;
+      let attempts = 0;
+      do {
+        x = Phaser.Math.Between(100, GAME_CONFIG.WORLD.WIDTH - 100);
+        y = Phaser.Math.Between(100, GAME_CONFIG.WORLD.HEIGHT - 100);
+        attempts++;
+      } while (this.isNearVillageSpawn(x, y) && attempts < 20);
+
+      const cat = new CatNPC(this, x, y);
+      this.cats.push(cat);
     }
   }
 }
