@@ -2,24 +2,25 @@ import Phaser from 'phaser';
 import { GAME_CONFIG } from '../config/gameConfig';
 
 /**
- * Village entity with buildings and interaction zones
+ * House entity for village scenes - can be interactive game houses or decorative
  */
-export default class Village extends Phaser.GameObjects.Container {
-  constructor(scene, config) {
+export default class House extends Phaser.GameObjects.Container {
+  constructor(scene, config, villageColor) {
     super(scene, config.x, config.y);
 
-    this.villageConfig = config;
+    this.houseConfig = config;
+    this.villageColor = villageColor;
     this.scene = scene;
 
     // Add to scene
     scene.add.existing(this);
     scene.physics.add.existing(this, true); // Static body
 
-    // Create village visuals
+    // Create house visuals
     this.createBuilding();
     this.createInteractionZone();
 
-    // Depth for layering - higher than trees (which are at depth 5)
+    // Depth for layering
     this.setDepth(150);
 
     // Interaction state
@@ -56,47 +57,55 @@ export default class Village extends Phaser.GameObjects.Container {
       }
     }
 
-    // Add emoji sign above building (smaller, more integrated)
-    const emoji = this.scene.add.text(
-      0,
-      -(buildingHeight/2) * tileSize - 18,
-      this.villageConfig.emoji,
-      { 
-        fontSize: '24px',
-        resolution: 2 // Sharper rendering
-      }
-    );
-    emoji.setOrigin(0.5);
-    emoji.setDepth(200); // Very high depth to ensure it's above everything
-    building.add(emoji);
+    // Add emoji sign above building for game houses
+    if (this.houseConfig.type === 'game' && this.houseConfig.emoji) {
+      const emoji = this.scene.add.text(
+        0,
+        -(buildingHeight/2) * tileSize - 18,
+        this.houseConfig.emoji,
+        { 
+          fontSize: '24px',
+          resolution: 2
+        }
+      );
+      emoji.setOrigin(0.5);
+      emoji.setDepth(200);
+      building.add(emoji);
+      this.emoji = emoji;
+    }
 
-    // Add village name plate below building with pixel-art styling
+    // Add house name plate below building
     const namePlate = this.scene.add.text(
       0,
       (buildingHeight/2) * tileSize + 12,
-      this.villageConfig.name,
+      this.houseConfig.name,
       {
         fontSize: '12px',
-        fontFamily: 'monospace', // More pixel-art like
+        fontFamily: 'monospace',
         color: '#ffffff',
         backgroundColor: '#000000',
         padding: { x: 8, y: 4 },
-        resolution: 2 // Sharper rendering
+        resolution: 2
       }
     );
     namePlate.setOrigin(0.5);
-    namePlate.setDepth(200); // Very high depth to ensure it's above everything
+    namePlate.setDepth(200);
     building.add(namePlate);
 
-    // Add the building container to this village container
+    // Add colored glow for game houses
+    if (this.houseConfig.type === 'game') {
+      const glow = this.scene.add.circle(0, 0, 50, this.villageColor, 0.2);
+      building.add(glow);
+      glow.setDepth(-1); // Behind the house
+      this.glow = glow;
+    }
+
+    // Add the building container to this house container
     this.add(building);
-    
-    // Set higher depth for the building so text is visible
     building.setDepth(100);
 
     // Store references
     this.buildingContainer = building;
-    this.emoji = emoji;
   }
 
   createInteractionZone() {
@@ -108,9 +117,6 @@ export default class Village extends Phaser.GameObjects.Container {
       0x00ff00,
       0 // Fully transparent
     );
-    
-    // For debugging, you can set alpha to 0.2 to see the zones
-    // zone.setAlpha(0.2);
     
     this.add(zone);
     this.interactionZone = zone;
@@ -141,6 +147,9 @@ export default class Village extends Phaser.GameObjects.Container {
   }
 
   onPlayerEnter() {
+    // Only show interaction for game houses
+    if (this.houseConfig.type !== 'game') return;
+
     // Check if scene is still active
     if (!this.scene || !this.scene.tweens) return;
 
@@ -153,14 +162,29 @@ export default class Village extends Phaser.GameObjects.Container {
       ease: 'Power2'
     });
 
-    // Bounce emoji
-    this.scene.tweens.add({
-      targets: this.emoji,
-      y: this.emoji.y - 10,
-      duration: 300,
-      yoyo: true,
-      ease: 'Sine.easeInOut'
-    });
+    // Bounce emoji if it exists
+    if (this.emoji) {
+      this.scene.tweens.add({
+        targets: this.emoji,
+        y: this.emoji.y - 10,
+        duration: 300,
+        yoyo: true,
+        ease: 'Sine.easeInOut'
+      });
+    }
+
+    // Pulse glow
+    if (this.glow) {
+      this.scene.tweens.add({
+        targets: this.glow,
+        alpha: 0.4,
+        scale: 1.2,
+        duration: 300,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut'
+      });
+    }
   }
 
   onPlayerExit() {
@@ -175,15 +199,30 @@ export default class Village extends Phaser.GameObjects.Container {
       duration: 200,
       ease: 'Power2'
     });
+
+    // Stop glow pulse
+    if (this.glow) {
+      this.scene.tweens.killTweensOf(this.glow);
+      this.scene.tweens.add({
+        targets: this.glow,
+        alpha: 0.2,
+        scale: 1,
+        duration: 200,
+        ease: 'Power2'
+      });
+    }
   }
 
-  enterVillage() {
+  enterHouse() {
     // This will be called when player presses E while nearby
-    console.log(`Entering ${this.villageConfig.name}...`);
+    console.log(`Entering ${this.houseConfig.name}...`);
     
+    // Only allow entering game houses
+    if (this.houseConfig.type !== 'game') return;
+
     // Check if scene is still active
     if (!this.scene || !this.scene.tweens) return;
-    
+
     // Add entrance animation
     this.scene.tweens.add({
       targets: this,
@@ -192,13 +231,17 @@ export default class Village extends Phaser.GameObjects.Container {
       duration: 500,
       yoyo: true,
       onComplete: () => {
-        // Trigger village entrance (can emit event here)
-        this.scene.events.emit('villageEntered', this.villageConfig);
+        // Trigger house entrance (can emit event here)
+        this.scene.events.emit('houseEntered', this.houseConfig);
       }
     });
   }
 
   getConfig() {
-    return this.villageConfig;
+    return this.houseConfig;
+  }
+
+  isGameHouse() {
+    return this.houseConfig.type === 'game';
   }
 }
