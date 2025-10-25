@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { GAME_CONFIG } from '../config/gameConfig';
 
 /**
  * UI overlay scene for HUD and prompts

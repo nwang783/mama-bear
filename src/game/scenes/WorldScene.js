@@ -233,7 +233,6 @@ export default class WorldScene extends Phaser.Scene {
     const readingY = villages[0].y;
     const mathX = villages[1].x;
     const mathY = villages[1].y;
-    const financeX = villages[2].x;
     const financeY = villages[2].y;
 
     // Horizontal path connecting reading and math villages

@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import Player from '../entities/Player';
-import House from '../entities/House';
 import CatNPC from '../entities/CatNPC';
 import { GAME_CONFIG } from '../config/gameConfig';
 
