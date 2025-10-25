@@ -162,47 +162,6 @@ export default class WorldScene extends Phaser.Scene {
       }
     }
 
-    // Create a couple of meandering streams (3 tiles wide)
-    const streams = 3;
-    for (let s = 0; s < streams; s++) {
-      let x, y, attempts = 0;
-      do {
-        x = Phaser.Math.Between(tileSize * 6, GAME_CONFIG.WORLD.WIDTH - tileSize * 6);
-        y = Phaser.Math.Between(tileSize * 6, GAME_CONFIG.WORLD.HEIGHT - tileSize * 6);
-        attempts++;
-      } while (this.isNearVillageSpawn(x, y) && attempts < 25);
-
-      // Initial direction
-      let angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
-      const segs = Phaser.Math.Between(10, 20);
-      for (let k = 0; k < segs; k++) {
-        // Place width-3 strip perpendicular to movement
-        const dir = new Phaser.Math.Vector2(Math.cos(angle), Math.sin(angle)).normalize();
-        const step = dir.clone().scale(tileSize);
-        // perpendicular vector
-        const perp = new Phaser.Math.Vector2(-dir.y, dir.x).scale(tileSize);
-
-        for (let w = -1; w <= 1; w++) {
-          const wx = x + perp.x * w;
-          const wy = y + perp.y * w;
-          if (this.isNearAnyPath(wx, wy, tileSize * 2)) continue;
-          const water = this.waterGroup.create(wx, wy, 'water_tiles', 0);
-          water.setDepth(-50);
-          water.refreshBody();
-        }
-
-        // Step forward
-        x += step.x;
-        y += step.y;
-
-        // Random gentle turn
-        angle += Phaser.Math.FloatBetween(-0.5, 0.5) * 0.3;
-
-        // Clamp inside world bounds
-        x = Phaser.Math.Clamp(x, tileSize * 4, GAME_CONFIG.WORLD.WIDTH - tileSize * 4);
-        y = Phaser.Math.Clamp(y, tileSize * 4, GAME_CONFIG.WORLD.HEIGHT - tileSize * 4);
-      }
-    }
 
     // After placement, clear any accidental overlaps with paths
     this.pruneWaterOnPaths(tileSize * 0.9);
@@ -241,7 +200,7 @@ export default class WorldScene extends Phaser.Scene {
     const downTiles = 12;
     for (let i = 0; i < downTiles; i++) {
       const y = sy + i * tileSize;
-      const t = this.add.image(sx, y, 'tile_0025');
+      const t = this.add.image(sx, y, 'tile_0043');
       t.setDepth(-10);
       this.pathPoints.push({ x: sx, y });
     }
@@ -251,7 +210,7 @@ export default class WorldScene extends Phaser.Scene {
     const rightTiles = 16;
     for (let i = 0; i <= rightTiles; i++) {
       const x = sx + i * tileSize;
-      const t = this.add.image(x, cornerY, 'tile_0025');
+      const t = this.add.image(x, cornerY, 'tile_0043');
       t.setDepth(-10);
       this.pathPoints.push({ x, y: cornerY });
     }
@@ -265,58 +224,57 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   createPaths() {
-    // Create simple paths between villages using tile_0025
+    // Create orthogonal T-shaped path network
     const villages = GAME_CONFIG.VILLAGES;
     const tileSize = 16;
     
-    // Path from reading to math
-    this.createPath(villages[0].x, villages[0].y, villages[1].x, villages[1].y, tileSize);
-    
-    // Path from math to finance
-    this.createPath(villages[1].x, villages[1].y, villages[2].x, villages[2].y, tileSize);
-    
-    // Path from finance to reading (complete the loop)
-    this.createPath(villages[2].x, villages[2].y, villages[0].x, villages[0].y, tileSize);
+    // reading = villages[0], math = villages[1], finance = villages[2]
+    const readingX = villages[0].x;
+    const readingY = villages[0].y;
+    const mathX = villages[1].x;
+    const mathY = villages[1].y;
+    const financeX = villages[2].x;
+    const financeY = villages[2].y;
+
+    // Horizontal path connecting reading and math villages
+    const horizY = (readingY + mathY) / 2;
+    this.createHorizontalPath(readingX, mathX, horizY, tileSize);
+
+    // Vertical path from finance village up to the horizontal path
+    const midX = (readingX + mathX) / 2;
+    this.createVerticalPath(midX, financeY, horizY, tileSize);
   }
 
-  createPath(x1, y1, x2, y2, tileSize) {
-    // Calculate direction and distance
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const steps = Math.floor(distance / tileSize);
-    
-    // Normalize direction
-    const stepX = dx / steps;
-    const stepY = dy / steps;
-    
-    // Place path tiles along the line
+  createHorizontalPath(x1, x2, y, tileSize) {
+    const minX = Math.min(x1, x2);
+    const maxX = Math.max(x1, x2);
+    const steps = Math.floor((maxX - minX) / tileSize);
+
     for (let i = 0; i <= steps; i++) {
-      const x = x1 + (stepX * i);
-      const y = y1 + (stepY * i);
+      const x = minX + i * tileSize;
       
-      // Add path tile
-      const pathTile = this.add.image(x, y, 'tile_0025');
-      pathTile.setDepth(-10);
-      // record for water avoidance
-      this.pathPoints.push({ x, y });
+      // 3-wide stone center
+      for (let row = -1; row <= 1; row++) {
+        const stoneTile = this.add.image(x, y + row * tileSize, 'tile_0043');
+        stoneTile.setDepth(-10);
+        this.pathPoints.push({ x, y: y + row * tileSize });
+      }
+    }
+  }
+
+  createVerticalPath(x, y1, y2, tileSize) {
+    const minY = Math.min(y1, y2);
+    const maxY = Math.max(y1, y2);
+    const steps = Math.floor((maxY - minY) / tileSize);
+
+    for (let i = 0; i <= steps; i++) {
+      const y = minY + i * tileSize;
       
-      // Add some width variation - place tiles slightly offset
-      if (i % 2 === 0) {
-        const offset = tileSize * 0.8;
-        // Add perpendicular tiles for path width using normalized direction
-        const len = Math.hypot(dx, dy) || 1;
-        const nx = dx / len;
-        const ny = dy / len;
-        const perpX = -ny * offset;
-        const perpY = nx * offset;
-        
-        const pathTile2 = this.add.image(x + perpX, y + perpY, 'tile_0025');
-        pathTile2.setDepth(-10);
-        const pathTile3 = this.add.image(x - perpX, y - perpY, 'tile_0025');
-        pathTile3.setDepth(-10);
-        this.pathPoints.push({ x: x + perpX, y: y + perpY });
-        this.pathPoints.push({ x: x - perpX, y: y - perpY });
+      // 3-wide stone center
+      for (let col = -1; col <= 1; col++) {
+        const stoneTile = this.add.image(x + col * tileSize, y, 'tile_0043');
+        stoneTile.setDepth(-10);
+        this.pathPoints.push({ x: x + col * tileSize, y });
       }
     }
   }

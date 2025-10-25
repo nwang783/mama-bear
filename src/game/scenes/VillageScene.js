@@ -155,7 +155,7 @@ export default class VillageScene extends Phaser.Scene {
       const x = x1 + (stepX * i);
       const y = y1 + (stepY * i);
       
-      const pathTile = this.add.image(x, y, 'tile_0025');
+      const pathTile = this.add.image(x, y, 'tile_0043');
       pathTile.setDepth(-10);
       
       // Add width variation
@@ -164,9 +164,9 @@ export default class VillageScene extends Phaser.Scene {
         const perpX = -stepY / steps * offset;
         const perpY = stepX / steps * offset;
         
-        const pathTile2 = this.add.image(x + perpX, y + perpY, 'tile_0025');
+        const pathTile2 = this.add.image(x + perpX, y + perpY, 'tile_0043');
         pathTile2.setDepth(-10);
-        const pathTile3 = this.add.image(x - perpX, y - perpY, 'tile_0025');
+        const pathTile3 = this.add.image(x - perpX, y - perpY, 'tile_0043');
         pathTile3.setDepth(-10);
       }
     }
