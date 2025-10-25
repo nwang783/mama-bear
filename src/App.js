@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import Game from './components/Game';
+import FruitCatch from './components/FruitCatch';
 import './App.css';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/game" element={<Game />} />
+          <Route path="/fruit-catch" element={<FruitCatch />} />
         </Routes>
       </div>
     </Router>
