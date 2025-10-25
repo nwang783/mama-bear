@@ -46,6 +46,17 @@ export default class BootScene extends Phaser.Scene {
       'Sprout Lands - Sprites - Basic pack/Tilesets/Hills.png'
     );
 
+    // Load water and biome things as spritesheets (16x16 tiles)
+    this.load.spritesheet('water_tiles',
+      'Sprout Lands - Sprites - Basic pack/Tilesets/Water.png',
+      { frameWidth: 16, frameHeight: 16 }
+    );
+
+    this.load.spritesheet('biome_things',
+      'Sprout Lands - Sprites - Basic pack/Objects/Basic_Grass_Biom_things.png',
+      { frameWidth: 16, frameHeight: 16 }
+    );
+
     // Load furniture for buildings
     this.load.image('furniture', 
       'Sprout Lands - Sprites - Basic pack/Objects/Basic_Furniture.png'

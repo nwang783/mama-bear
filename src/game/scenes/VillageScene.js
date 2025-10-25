@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import Player from '../entities/Player';
 import House from '../entities/House';
+import CatNPC from '../entities/CatNPC';
 import { GAME_CONFIG } from '../config/gameConfig';
 
 /**
@@ -14,6 +15,7 @@ export default class VillageScene extends Phaser.Scene {
     this.nearbyHouse = null;
     this.villageConfig = null;
     this.housesConfig = [];
+    this.cats = [];
   }
 
   init(data) {
@@ -50,6 +52,9 @@ export default class VillageScene extends Phaser.Scene {
 
     // Setup camera
     this.setupCamera();
+
+    // Add a couple of wandering cats in each village
+    this.spawnCats(3);
 
     // Listen for house entrance events
     this.events.on('houseEntered', this.handleHouseEntered, this);
@@ -229,7 +234,7 @@ export default class VillageScene extends Phaser.Scene {
       GAME_CONFIG.VILLAGE_SCENE.HEIGHT
     );
 
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(1.5);
   }
 
   createTitleText() {
@@ -263,6 +268,9 @@ export default class VillageScene extends Phaser.Scene {
   }
 
   update() {
+    // Update cats
+    this.cats.forEach(cat => cat.update());
+
     // Update player
     if (this.player) {
       this.player.update();
@@ -364,6 +372,21 @@ export default class VillageScene extends Phaser.Scene {
     } else {
       // Game not yet implemented
       alert(`${houseConfig.name} is coming soon!\\n\\nThis minigame is currently under development.`);
+    }
+  }
+
+  spawnCats(count = 2) {
+    for (let i = 0; i < count; i++) {
+      let x, y;
+      let attempts = 0;
+      do {
+        x = Phaser.Math.Between(40, GAME_CONFIG.VILLAGE_SCENE.WIDTH - 40);
+        y = Phaser.Math.Between(80, GAME_CONFIG.VILLAGE_SCENE.HEIGHT - 80);
+        attempts++;
+      } while ((this.isNearHouseSpawn?.(x, y) || this.isNearPlayerSpawn?.(x, y)) && attempts < 20);
+
+      const cat = new CatNPC(this, x, y);
+      this.cats.push(cat);
     }
   }
 }
