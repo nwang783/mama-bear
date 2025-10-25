@@ -29,50 +29,32 @@ export default class Village extends Phaser.GameObjects.Container {
   createBuilding() {
     const tileSize = 16;
     
-    // Build a cute house using Kenney tiles
-    // Different building styles per village
-    const buildingStyles = {
-      'reading': { base: 'tile_0066', roof: 'tile_0053', door: 'tile_0080' },  // Blue house
-      'math': { base: 'tile_0068', roof: 'tile_0055', door: 'tile_0082' },     // Yellow house
-      'finance': { base: 'tile_0070', roof: 'tile_0057', door: 'tile_0084' }   // Red house
-    };
+    // House pattern as 4x3 grid (from upper left):
+    // Row 1: 52, 53, 54, 55
+    // Row 2: 64, 65, 66, 67
+    // Row 3: 76, 77, 78, 79
+    const housePattern = [
+      [52, 53, 54, 55],
+      [64, 65, 66, 67],
+      [76, 77, 78, 79]
+    ];
 
-    const style = buildingStyles[this.villageConfig.id] || buildingStyles['reading'];
-
-    // Create building structure (3x4 tiles)
-    const buildingWidth = 3;
-    const buildingHeight = 4;
+    const buildingWidth = 4;
+    const buildingHeight = 3;
     const building = this.scene.add.container(0, 0);
 
-    // Build walls
-    for (let x = 0; x < buildingWidth; x++) {
-      for (let y = 1; y < buildingHeight; y++) {
-        const wall = this.scene.add.image(
-          (x - buildingWidth/2) * tileSize + tileSize/2,
-          (y - buildingHeight/2) * tileSize + tileSize/2,
-          style.base
+    // Build house from pattern
+    for (let row = 0; row < buildingHeight; row++) {
+      for (let col = 0; col < buildingWidth; col++) {
+        const tileNum = housePattern[row][col].toString().padStart(4, '0');
+        const tile = this.scene.add.image(
+          (col - buildingWidth/2) * tileSize + tileSize/2,
+          (row - buildingHeight/2) * tileSize + tileSize/2,
+          `tile_${tileNum}`
         );
-        building.add(wall);
+        building.add(tile);
       }
     }
-
-    // Add roof tiles
-    for (let x = 0; x < buildingWidth; x++) {
-      const roofTile = this.scene.add.image(
-        (x - buildingWidth/2) * tileSize + tileSize/2,
-        (0 - buildingHeight/2) * tileSize + tileSize/2,
-        style.roof
-      );
-      building.add(roofTile);
-    }
-
-    // Add door (bottom center)
-    const door = this.scene.add.image(
-      0,
-      (buildingHeight - 1 - buildingHeight/2) * tileSize + tileSize/2,
-      style.door
-    );
-    building.add(door);
 
     // Add emoji sign above building
     const emoji = this.scene.add.text(

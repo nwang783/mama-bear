@@ -52,17 +52,17 @@ export default class WorldScene extends Phaser.Scene {
     const tilesY = Math.ceil(GAME_CONFIG.WORLD.HEIGHT / tileSize);
 
     // Create grass pattern with weighted random variation
-    // 70% tile_0000, 20% tile_0001, 10% tile_0002 for more subtle variation
+    // 70% tile_0000, 28% tile_0001, 2% tile_0002 for more subtle variation
     for (let x = 0; x < tilesX; x++) {
       for (let y = 0; y < tilesY; y++) {
         const rand = Math.random();
         let tileKey;
         if (rand < 0.7) {
           tileKey = 'tile_0000'; // 70% - main grass
-        } else if (rand < 0.9) {
-          tileKey = 'tile_0001'; // 20% - variation
+        } else if (rand < 0.98) {
+          tileKey = 'tile_0001'; // 28% - variation
         } else {
-          tileKey = 'tile_0002'; // 10% - less common variation
+          tileKey = 'tile_0002'; // 2% - rare variation
         }
         
         const grassTile = this.add.image(x * tileSize, y * tileSize, tileKey);
@@ -130,23 +130,8 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   createDecorations() {
-    // Add trees
-    for (let i = 0; i < GAME_CONFIG.DECORATIONS.TREES_COUNT; i++) {
-      const x = Phaser.Math.Between(100, GAME_CONFIG.WORLD.WIDTH - 100);
-      const y = Phaser.Math.Between(200, GAME_CONFIG.WORLD.HEIGHT - 200);
-      
-      // Make sure trees don't spawn on villages
-      if (!this.isNearVillageSpawn(x, y)) {
-        this.createTree(x, y);
-      }
-    }
-
-    // Add flowers
-    for (let i = 0; i < GAME_CONFIG.DECORATIONS.FLOWERS_COUNT; i++) {
-      const x = Phaser.Math.Between(50, GAME_CONFIG.WORLD.WIDTH - 50);
-      const y = Phaser.Math.Between(150, GAME_CONFIG.WORLD.HEIGHT - 150);
-      this.createFlower(x, y);
-    }
+    // Decorations now handled by tile-based system (trees are tile_0004 and tile_0005)
+    // No additional decorations needed
   }
 
   isNearVillageSpawn(x, y) {
@@ -154,39 +139,6 @@ export default class WorldScene extends Phaser.Scene {
       const distance = Phaser.Math.Distance.Between(x, y, village.x, village.y);
       return distance < 250;
     });
-  }
-
-  createTree(x, y) {
-    const tree = this.add.container(x, y);
-    
-    // Tree trunk
-    const trunk = this.add.rectangle(0, 0, 15, 40, 0x8b4513);
-    
-    // Tree foliage (circle)
-    const foliage = this.add.circle(0, -30, 30, 0x228b22);
-    foliage.setStrokeStyle(2, 0x1a6b1a);
-    
-    tree.add([trunk, foliage]);
-    tree.setDepth(10);
-
-    // Gentle sway animation
-    this.tweens.add({
-      targets: foliage,
-      angle: -3,
-      duration: 2000,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut'
-    });
-  }
-
-  createFlower(x, y) {
-    const colors = [0xff69b4, 0xffd700, 0xff6347, 0x9370db, 0xffa500];
-    const color = Phaser.Utils.Array.GetRandom(colors);
-    
-    const flower = this.add.circle(x, y, 5, color);
-    flower.setStrokeStyle(1, 0x000000);
-    flower.setDepth(5);
   }
 
   createPaths() {
