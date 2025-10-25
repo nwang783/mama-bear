@@ -64,7 +64,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
 
     // Setup camera
     this.cameras.main.setBounds(0, 0, 800, 450);
-    this.cameras.main.setZoom(1.0); // Normal zoom
+    this.cameras.main.setZoom(1.3); // Slightly zoomed in for better visibility
 
     // Setup pause key
     this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
