@@ -9,6 +9,9 @@ function LandingPage() {
     navigate('/game');
   };
 
+  const handleExtractClick = () => {
+    navigate('/extract-questions');
+  };
   return (
     <div className="landing-page">
       <div className="hero-section">
@@ -20,9 +23,14 @@ function LandingPage() {
           A free platform where moms can create engaging learning experiences.
           Explore different villages and master math, finances, and reading!
         </p>
-        <button className="play-button" onClick={handlePlayClick}>
-          Start Learning Adventure
-        </button>
+        <div className="action-buttons">
+          <button className="play-button" onClick={handlePlayClick}>
+            Start Learning Adventure
+          </button>
+          <button className="extract-button" onClick={handleExtractClick}>
+            🤖 Extract Questions from PDF
+          </button>
+        </div>
       </div>
       <div className="features">
         <div className="feature">
