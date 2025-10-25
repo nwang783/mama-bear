@@ -14,6 +14,8 @@ export default class WorldScene extends Phaser.Scene {
     this.villages = [];
     this.nearbyVillage = null;
     this.cats = [];
+    this.waterGroup = null;
+    this.pathPoints = [];
   }
 
   create() {
@@ -34,14 +36,21 @@ export default class WorldScene extends Phaser.Scene {
     // Create villages
     this.createVillages();
 
-    // Create paths between villages
+    // Create paths between villages (record path positions)
     this.createPaths();
+
+    // Extend spawn path for better guidance and record points
+    this.extendSpawnPath();
 
     // Create player
     this.createPlayer();
 
     // Setup camera to follow player
     this.setupCamera();
+
+    // Add water and plants after paths to avoid intersections
+    this.createWaterFeatures();
+    this.scatterPlants();
 
     // Create some wandering cats
     this.spawnCats(6);
@@ -116,7 +125,136 @@ export default class WorldScene extends Phaser.Scene {
 
   createDecorations() {
     // Decorations now handled by tile-based system (trees are tile_0004 and tile_0005)
-    // No additional decorations needed
+    // No additional decorations needed here
+  }
+
+  createWaterFeatures() {
+    const tileSize = 16;
+
+    if (!this.waterGroup) {
+      this.waterGroup = this.physics.add.staticGroup();
+    }
+
+    // Create a few small lakes (blobby clusters)
+    const lakes = 4;
+    for (let i = 0; i < lakes; i++) {
+      let cx, cy, attempts = 0;
+      do {
+        cx = Phaser.Math.Between(tileSize * 8, GAME_CONFIG.WORLD.WIDTH - tileSize * 8);
+        cy = Phaser.Math.Between(tileSize * 8, GAME_CONFIG.WORLD.HEIGHT - tileSize * 8);
+        attempts++;
+      } while (this.isNearVillageSpawn(cx, cy) && attempts < 25);
+
+      const r = Phaser.Math.Between(3, 6); // radius in tiles
+      for (let dx = -r; dx <= r; dx++) {
+        for (let dy = -r; dy <= r; dy++) {
+          const dist2 = dx * dx + dy * dy;
+          const threshold = r * r + Phaser.Math.Between(-2, 2); // fuzzy edge
+          if (dist2 <= threshold) {
+            const wx = cx + dx * tileSize;
+            const wy = cy + dy * tileSize;
+            if (this.isNearAnyPath(wx, wy, tileSize * 2)) continue;
+            const water = this.waterGroup.create(wx, wy, 'water_tiles', 0);
+            water.setDepth(-50);
+            water.refreshBody();
+          }
+        }
+      }
+    }
+
+    // Create a couple of meandering streams (3 tiles wide)
+    const streams = 3;
+    for (let s = 0; s < streams; s++) {
+      let x, y, attempts = 0;
+      do {
+        x = Phaser.Math.Between(tileSize * 6, GAME_CONFIG.WORLD.WIDTH - tileSize * 6);
+        y = Phaser.Math.Between(tileSize * 6, GAME_CONFIG.WORLD.HEIGHT - tileSize * 6);
+        attempts++;
+      } while (this.isNearVillageSpawn(x, y) && attempts < 25);
+
+      // Initial direction
+      let angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
+      const segs = Phaser.Math.Between(10, 20);
+      for (let k = 0; k < segs; k++) {
+        // Place width-3 strip perpendicular to movement
+        const dir = new Phaser.Math.Vector2(Math.cos(angle), Math.sin(angle)).normalize();
+        const step = dir.clone().scale(tileSize);
+        // perpendicular vector
+        const perp = new Phaser.Math.Vector2(-dir.y, dir.x).scale(tileSize);
+
+        for (let w = -1; w <= 1; w++) {
+          const wx = x + perp.x * w;
+          const wy = y + perp.y * w;
+          if (this.isNearAnyPath(wx, wy, tileSize * 2)) continue;
+          const water = this.waterGroup.create(wx, wy, 'water_tiles', 0);
+          water.setDepth(-50);
+          water.refreshBody();
+        }
+
+        // Step forward
+        x += step.x;
+        y += step.y;
+
+        // Random gentle turn
+        angle += Phaser.Math.FloatBetween(-0.5, 0.5) * 0.3;
+
+        // Clamp inside world bounds
+        x = Phaser.Math.Clamp(x, tileSize * 4, GAME_CONFIG.WORLD.WIDTH - tileSize * 4);
+        y = Phaser.Math.Clamp(y, tileSize * 4, GAME_CONFIG.WORLD.HEIGHT - tileSize * 4);
+      }
+    }
+
+    // After placement, clear any accidental overlaps with paths
+    this.pruneWaterOnPaths(tileSize * 0.9);
+
+    // Add collision: player cannot walk over water
+    if (this.player && this.waterGroup) {
+      this.physics.add.collider(this.player, this.waterGroup);
+    }
+  }
+
+  scatterPlants() {
+    const tileSize = 16;
+    const count = 12;
+    for (let i = 0; i < count; i++) {
+      const px = Phaser.Math.Between(tileSize, GAME_CONFIG.WORLD.WIDTH - tileSize);
+      const py = Phaser.Math.Between(tileSize, GAME_CONFIG.WORLD.HEIGHT - tileSize);
+
+      // keep away from villages, paths, and water
+      if (this.isNearVillageSpawn(px, py)) continue;
+      if (this.isNearAnyPath(px, py, 18)) continue;
+      if (this.isPointOverWater(px, py)) continue;
+
+      // choose a frame from the first 64 tiles as a safe range
+      const frame = Phaser.Math.Between(0, 63);
+      const plant = this.add.image(px, py, 'biome_things', frame);
+      plant.setDepth(2);
+    }
+  }
+
+  extendSpawnPath() {
+    const tileSize = 16;
+    const sx = GAME_CONFIG.PLAYER.START_X;
+    const sy = GAME_CONFIG.PLAYER.START_Y;
+
+    // Create a longer path leading down from spawn, then right
+    const downTiles = 12;
+    for (let i = 0; i < downTiles; i++) {
+      const y = sy + i * tileSize;
+      const t = this.add.image(sx, y, 'tile_0025');
+      t.setDepth(-10);
+      this.pathPoints.push({ x: sx, y });
+    }
+
+    // Horizontal should meet exactly at the last vertical tile (continuous corner)
+    const cornerY = sy + (downTiles - 1) * tileSize;
+    const rightTiles = 16;
+    for (let i = 0; i <= rightTiles; i++) {
+      const x = sx + i * tileSize;
+      const t = this.add.image(x, cornerY, 'tile_0025');
+      t.setDepth(-10);
+      this.pathPoints.push({ x, y: cornerY });
+    }
   }
 
   isNearVillageSpawn(x, y) {
@@ -160,18 +298,25 @@ export default class WorldScene extends Phaser.Scene {
       // Add path tile
       const pathTile = this.add.image(x, y, 'tile_0025');
       pathTile.setDepth(-10);
+      // record for water avoidance
+      this.pathPoints.push({ x, y });
       
       // Add some width variation - place tiles slightly offset
       if (i % 2 === 0) {
         const offset = tileSize * 0.8;
-        // Add perpendicular tiles for path width
-        const perpX = -stepY / steps * offset;
-        const perpY = stepX / steps * offset;
+        // Add perpendicular tiles for path width using normalized direction
+        const len = Math.hypot(dx, dy) || 1;
+        const nx = dx / len;
+        const ny = dy / len;
+        const perpX = -ny * offset;
+        const perpY = nx * offset;
         
         const pathTile2 = this.add.image(x + perpX, y + perpY, 'tile_0025');
         pathTile2.setDepth(-10);
         const pathTile3 = this.add.image(x - perpX, y - perpY, 'tile_0025');
         pathTile3.setDepth(-10);
+        this.pathPoints.push({ x: x + perpX, y: y + perpY });
+        this.pathPoints.push({ x: x - perpX, y: y - perpY });
       }
     }
   }
@@ -285,5 +430,40 @@ export default class WorldScene extends Phaser.Scene {
       const cat = new CatNPC(this, x, y);
       this.cats.push(cat);
     }
+  }
+  isNearAnyPath(x, y, minDist = 12) {
+    for (let i = 0; i < this.pathPoints.length; i++) {
+      const p = this.pathPoints[i];
+      if (Phaser.Math.Distance.Between(x, y, p.x, p.y) < minDist) return true;
+    }
+    return false;
+  }
+
+  pruneWaterOnPaths(clearance = 12) {
+    if (!this.waterGroup) return;
+    const toRemove = [];
+    this.waterGroup.children.iterate(child => {
+      if (!child || !child.body) return;
+      const cx = child.x;
+      const cy = child.y;
+      if (this.isNearAnyPath(cx, cy, clearance)) {
+        toRemove.push(child);
+      }
+    });
+    toRemove.forEach(c => c.destroy());
+  }
+
+  isPointOverWater(x, y) {
+    if (!this.waterGroup) return false;
+    let hit = false;
+    this.waterGroup.children.iterate(child => {
+      if (hit || !child) return;
+      const b = child.body;
+      if (!b) return;
+      if (x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height) {
+        hit = true;
+      }
+    });
+    return hit;
   }
 }
