@@ -98,14 +98,22 @@ function QuestionExtractor() {
   };
 
   return (
-    <div className="question-extractor">
+    <div
+      className="question-extractor"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/assets/hero-background.png)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       {/* Header */}
       <div className="extractor-header">
-        <button className="back-button" onClick={() => navigate('/')}>
-          ← Back to Home
+        <button className="pixel-button secondary" onClick={() => navigate('/')}>
+          ← Back
         </button>
-        <h1>🐻 Question Extractor</h1>
-        <p className="subtitle">Upload a PDF to automatically extract educational questions</p>
+        <h1 className="retro-title">Question Extractor</h1>
+        <p className="retro-sub">Upload a PDF to extract questions with AI</p>
       </div>
 
       {/* Main Content */}
@@ -174,7 +182,7 @@ function QuestionExtractor() {
 
             <button
               type="submit"
-              className="submit-button"
+              className="pixel-button primary submit-button"
               disabled={!selectedFile || isProcessing}
             >
               {isProcessing ? 'Processing...' : 'Extract Questions'}
@@ -207,6 +215,7 @@ function QuestionExtractor() {
         {/* Results Display */}
         {result && (
           <div className="results-section">
+            <div className="results-section-inner">
             <div className="results-header">
               <h2>✨ Extraction Complete!</h2>
               <div className="results-summary">
@@ -264,6 +273,7 @@ function QuestionExtractor() {
                   </div>
                 </div>
               ))}
+            </div>
             </div>
           </div>
         )}
