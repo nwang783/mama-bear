@@ -8,10 +8,22 @@
   align-items: center;
   justify-content: center;
   color: #fff;
+  z-index: 1;
 }
 
-/* subtle overlay to improve text contrast */
-.landing-page::before {
+/* page container */
+.page-wrap {
+  position: relative;
+  width: 100%;
+}
+
+/* fixed background so content scrolls over it */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+.bg-layer::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -90,6 +102,109 @@
 
 .pixel-button.secondary { background: #ffd34d; }
 
+/* Marketing background section */
+.marketing-section {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.marketing-inner { position: relative; }
+
+/* Content sections below hero */
+.content-sections {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  padding: 24px 20px 72px;
+  margin: 0 auto;
+}
+
+.content-section {
+  position: relative;
+  margin: 18px auto;
+  text-align: center;
+}
+
+.panel {
+  background: rgba(10, 16, 28, 0.6);
+  border: 2px solid rgba(159, 246, 255, 0.25);
+  border-radius: 12px;
+  padding: 22px 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35), inset 0 0 24px rgba(159, 246, 255, 0.06);
+  backdrop-filter: blur(2px);
+}
+
+.section-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(1.05rem, 3vw, 1.6rem);
+  color: #9ff6ff;
+  text-align: center;
+  margin-bottom: 14px;
+  text-shadow: 3px 3px 0 #1c1c1c, 0 0 10px rgba(159, 246, 255, 0.35);
+}
+
+.section-body {
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  color: #eaf5ff;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 8px auto 0;
+  max-width: 1000px;
+}
+
+.step-card {
+  padding: 18px;
+}
+
+.step-number {
+  font-family: 'Press Start 2P', cursive;
+  display: inline-block;
+  background: #f9f871;
+  color: #0b1a2a;
+  padding: 8px 12px;
+  box-shadow: 0 4px 0 #8d8a2a;
+  margin-bottom: 12px;
+}
+
+.step-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  color: #7cf37c;
+  margin-bottom: 8px;
+}
+
+.step-text {
+  color: #e8f3ff;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 4px 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+}
+
+.feature-list li {
+  font-size: 0.98rem;
+  color: #eaf5ff;
+}
+
+@media (max-width: 900px) {
+  .steps-grid { grid-template-columns: 1fr; }
+  .feature-list { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 768px) {
-  .subtitle { margin: 16px auto 28px; }
+  .subtitle { margin: 16px auto 24px; }
 }
