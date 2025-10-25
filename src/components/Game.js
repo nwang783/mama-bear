@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
-import LobbyScene from '../game/LobbyScene';
+import BootScene from '../game/scenes/BootScene';
+import WorldScene from '../game/scenes/WorldScene';
+import UIScene from '../game/scenes/UIScene';
+import { GAME_CONFIG } from '../game/config/gameConfig';
 import './Game.css';
 
 function Game() {
@@ -11,17 +14,21 @@ function Game() {
     if (gameRef.current && !phaserGameRef.current) {
       const config = {
         type: Phaser.AUTO,
-        width: 800,
-        height: 600,
+        width: GAME_CONFIG.CANVAS.WIDTH,
+        height: GAME_CONFIG.CANVAS.HEIGHT,
         parent: gameRef.current,
-        backgroundColor: '#87ceeb',
-        scene: [LobbyScene],
+        backgroundColor: GAME_CONFIG.WORLD.BACKGROUND_COLOR,
+        scene: [BootScene, WorldScene, UIScene],
         physics: {
           default: 'arcade',
           arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: false // Set to true to see physics bodies
           }
+        },
+        scale: {
+          mode: Phaser.Scale.FIT,
+          autoCenter: Phaser.Scale.CENTER_BOTH
         }
       };
 
