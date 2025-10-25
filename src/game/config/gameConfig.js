@@ -70,6 +70,41 @@ export const GAME_CONFIG = {
   DECORATIONS: {
     TREES_COUNT: 30,
     FLOWERS_COUNT: 50
+  },
+
+  // House configurations for village scenes
+  HOUSES: {
+    MATH_VILLAGE: [
+      { id: 'fruitcatch', name: 'Fruit Catch', type: 'game', x: 400, y: 250, gameScene: 'FruitCatchScene', emoji: '🍎' },
+      { id: 'numbersort', name: 'Number Sort', type: 'game', x: 250, y: 450, gameScene: null, emoji: '🔢' },
+      { id: 'mathrace', name: 'Math Race', type: 'game', x: 550, y: 450, gameScene: null, emoji: '🏃' },
+      { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 250 },
+      { id: 'deco2', name: 'Village House', type: 'decoration', x: 550, y: 650 }
+    ],
+    READING_VILLAGE: [
+      { id: 'wordmatch', name: 'Word Match', type: 'game', x: 400, y: 250, gameScene: null, emoji: '📝' },
+      { id: 'storybuilder', name: 'Story Builder', type: 'game', x: 250, y: 450, gameScene: null, emoji: '📖' },
+      { id: 'letterhunt', name: 'Letter Hunt', type: 'game', x: 550, y: 450, gameScene: null, emoji: '🔤' },
+      { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 250 },
+      { id: 'deco2', name: 'Village House', type: 'decoration', x: 550, y: 650 }
+    ],
+    FINANCE_VILLAGE: [
+      { id: 'coincollector', name: 'Coin Collector', type: 'game', x: 400, y: 250, gameScene: null, emoji: '🪙' },
+      { id: 'budgetgame', name: 'Budget Game', type: 'game', x: 250, y: 450, gameScene: null, emoji: '💵' },
+      { id: 'shopkeeper', name: 'Shop Keeper', type: 'game', x: 550, y: 450, gameScene: null, emoji: '🏪' },
+      { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 250 },
+      { id: 'deco2', name: 'Village House', type: 'decoration', x: 550, y: 650 }
+    ]
+  },
+
+  // Village scene settings
+  VILLAGE_SCENE: {
+    WIDTH: 800,
+    HEIGHT: 900,
+    PLAYER_START_X: 400,
+    PLAYER_START_Y: 750,
+    EXIT_PORTAL_X: 400,
+    EXIT_PORTAL_Y: 820
   }
 };
 
