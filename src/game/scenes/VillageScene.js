@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import Player from '../entities/Player';
 import House from '../entities/House';
 import { GAME_CONFIG } from '../config/gameConfig';
-import { getQuestionsBySubject } from '../config/questionProviders';
 
 /**
  * Base village scene class - extended by specific village scenes
@@ -341,21 +340,27 @@ export default class VillageScene extends Phaser.Scene {
     
     // Check if this house has a game scene
     if (houseConfig.gameScene) {
-      // Prepare scene data
-      const sceneData = {
-        returnScene: this.scene.key,
-        villageConfig: this.villageConfig
-      };
-
-      // If this is FruitCollectorScene, add questions based on subject
+      // If this is FruitCollectorScene, show question set selection
       if (houseConfig.gameScene === 'FruitCollectorScene') {
         const subject = houseConfig.subject || this.villageConfig?.id || 'math';
-        sceneData.questions = getQuestionsBySubject(subject, 10);
-        sceneData.timeLimit = 60;
+        
+        // Launch the question set selection scene
+        const sceneData = {
+          subject: subject,
+          returnScene: this.scene.key,
+          villageConfig: this.villageConfig
+        };
+        
+        this.scene.start('QuestionSetSelectionScene', sceneData);
+      } else {
+        // For other game scenes, start normally
+        const sceneData = {
+          returnScene: this.scene.key,
+          villageConfig: this.villageConfig
+        };
+        
+        this.scene.start(houseConfig.gameScene, sceneData);
       }
-      
-      // Transition to the game scene
-      this.scene.start(houseConfig.gameScene, sceneData);
     } else {
       // Game not yet implemented
       alert(`${houseConfig.name} is coming soon!\\n\\nThis minigame is currently under development.`);
