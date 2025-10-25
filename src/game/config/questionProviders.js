@@ -4,7 +4,12 @@
  * - question: string (the question text)
  * - choices: array of strings (answer choices)
  * - correctIndex: number (index of correct answer in choices array)
+ * 
+ * Now integrates with Firebase to fetch community-created questions.
+ * Falls back to local generation if Firebase is unavailable.
  */
+
+import { getTopQuestionsBySubject } from '../../firebase/questionsService';
 
 /**
  * Generate math questions
@@ -213,8 +218,36 @@ export function getFinanceQuestions(count = 10) {
 
 /**
  * Get questions based on subject/village type
+ * First attempts to fetch from Firebase, then falls back to local generation
+ * 
+ * @param {string} subject - Subject type: 'math', 'reading', or 'finance'
+ * @param {number} count - Number of questions to fetch (default 10)
+ * @returns {Promise<Array>} Array of question objects
  */
-export function getQuestionsBySubject(subject, count = 10) {
+export async function getQuestionsFromFirebase(subject, count = 10) {
+  try {
+    console.log(`Attempting to fetch ${count} ${subject} questions from Firebase...`);
+    const questions = await getTopQuestionsBySubject(subject, count);
+    
+    if (questions && questions.length > 0) {
+      console.log(`Successfully fetched ${questions.length} ${subject} questions from Firebase`);
+      return questions;
+    } else {
+      console.warn(`No questions found in Firebase for ${subject}, using local fallback`);
+      return getLocalQuestionsBySubject(subject, count);
+    }
+  } catch (error) {
+    console.error('Error fetching questions from Firebase:', error);
+    console.log('Falling back to local questions');
+    return getLocalQuestionsBySubject(subject, count);
+  }
+}
+
+/**
+ * Get questions from local generators (fallback)
+ * This is the original function, renamed for clarity
+ */
+export function getLocalQuestionsBySubject(subject, count = 10) {
   switch (subject.toLowerCase()) {
     case 'math':
       return getMathQuestions(count);
@@ -225,4 +258,12 @@ export function getQuestionsBySubject(subject, count = 10) {
     default:
       return getMathQuestions(count);
   }
+}
+
+/**
+ * Backward compatibility: synchronous version that uses local questions
+ * Use getQuestionsFromFirebase() for the async Firebase-enabled version
+ */
+export function getQuestionsBySubject(subject, count = 10) {
+  return getLocalQuestionsBySubject(subject, count);
 }
