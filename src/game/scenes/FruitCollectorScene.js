@@ -47,8 +47,8 @@ export default class FruitCollectorScene extends Phaser.Scene {
   }
 
   create() {
-    // Set world bounds (much larger canvas for better gameplay)
-    this.physics.world.setBounds(0, 0, 1200, 800);
+    // Set world bounds
+    this.physics.world.setBounds(0, 0, 800, 600);
 
     // Create background
     this.createBackground();
@@ -63,8 +63,8 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.displayQuestion();
 
     // Setup camera
-    this.cameras.main.setBounds(0, 0, 1200, 800);
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setBounds(0, 0, 800, 600);
+    this.cameras.main.setZoom(1.0); // Normal zoom
 
     // Setup pause key
     this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -81,8 +81,8 @@ export default class FruitCollectorScene extends Phaser.Scene {
   createBackground() {
     // Create tiled grass background
     const tileSize = 16;
-    const tilesX = Math.ceil(1200 / tileSize);
-    const tilesY = Math.ceil(800 / tileSize);
+    const tilesX = Math.ceil(800 / tileSize);
+    const tilesY = Math.ceil(600 / tileSize);
 
     for (let x = 0; x < tilesX; x++) {
       for (let y = 0; y < tilesY; y++) {
@@ -103,9 +103,9 @@ export default class FruitCollectorScene extends Phaser.Scene {
     }
 
     // Add some decorative trees
-    for (let i = 0; i < 12; i++) {
-      const treeX = Phaser.Math.Between(50, 1150);
-      const treeY = Phaser.Math.Between(50, 650);
+    for (let i = 0; i < 8; i++) {
+      const treeX = Phaser.Math.Between(50, 750);
+      const treeY = Phaser.Math.Between(50, 450);
       const treeType = Math.random() < 0.5 ? 'tile_0004' : 'tile_0005';
       const tree = this.add.image(treeX, treeY, treeType);
       tree.setDepth(-10);
@@ -114,119 +114,126 @@ export default class FruitCollectorScene extends Phaser.Scene {
 
   createUI() {
     // Question panel at top - using stone background
-    const panelHeight = 160;
-    const panelWidth = 1180;
+    const panelHeight = 100;
+    const panelWidth = 780;
     
     // Create container for question panel
-    this.questionPanelContainer = this.add.container(600, 80);
+    this.questionPanelContainer = this.add.container(400, 50);
     this.questionPanelContainer.setDepth(1000);
     this.questionPanelContainer.setScrollFactor(0);
     
-    // Create stone background for question panel (73 tiles wide x 10 tiles tall)
-    this.createStoneBackground(this.questionPanelContainer, 0, 0, 73, 10);
+    // Create stone background for question panel (48 tiles wide x 6 tiles tall - more compact)
+    this.createStoneBackground(this.questionPanelContainer, 0, 0, 48, 6);
 
-    // Question text
-    this.questionText = this.add.text(0, -50, '', {
-      fontSize: '24px',
+    // Question text - at top of panel
+    this.questionText = this.add.text(0, -30, '', {
+      fontSize: '18px',
       fontFamily: 'Arial',
       color: '#000000',
       stroke: '#ffffff',
       strokeThickness: 2,
       align: 'center',
-      wordWrap: { width: 1000 }
+      wordWrap: { width: 700 }
     });
     this.questionText.setOrigin(0.5);
     this.questionPanelContainer.add(this.questionText);
 
-    // Choice texts
+    // Choice texts - in a single row below question
     this.choiceTexts = [];
     for (let i = 0; i < 4; i++) {
-      const x = -300 + (i % 2) * 600; // Relative to container center
-      const y = 0 + Math.floor(i / 2) * 35; // Relative to container center
+      const x = -270 + i * 180; // Spread horizontally
+      const y = 10; // Below question
       const choiceText = this.add.text(x, y, '', {
-        fontSize: '16px',
+        fontSize: '13px',
         fontFamily: 'Arial',
         color: '#000000',
         stroke: '#ffffff',
         strokeThickness: 2,
-        align: 'left'
+        align: 'center'
       });
       choiceText.setOrigin(0.5);
       this.questionPanelContainer.add(choiceText);
       this.choiceTexts.push(choiceText);
     }
 
-    // Score display (with stone background)
-    this.scoreContainer = this.add.container(80, 190);
-    this.scoreContainer.setDepth(1000);
+    // Score display (bottom left, separate from question panel)
+    this.scoreContainer = this.add.container(80, 115);
+    this.scoreContainer.setDepth(1001);
     this.scoreContainer.setScrollFactor(0);
-    this.createStoneBackground(this.scoreContainer, 0, 0, 10, 3);
+    
+    // Add stone background for score
+    this.createStoneBackground(this.scoreContainer, 0, 0, 7, 2);
     
     this.scoreText = this.add.text(0, 0, 'Score: 0', {
-      fontSize: '18px',
+      fontSize: '16px',
       fontFamily: 'Arial',
       color: '#000000',
       stroke: '#ffffff',
-      strokeThickness: 2
+      strokeThickness: 2,
+      fontStyle: 'bold'
     });
     this.scoreText.setOrigin(0.5);
     this.scoreContainer.add(this.scoreText);
 
-    // Lives display (with stone background)
-    this.livesContainer = this.add.container(1120, 190);
-    this.livesContainer.setDepth(1000);
+    // Lives display (bottom right, separate from question panel)
+    this.livesContainer = this.add.container(720, 115);
+    this.livesContainer.setDepth(1001);
     this.livesContainer.setScrollFactor(0);
-    this.createStoneBackground(this.livesContainer, 0, 0, 7, 3);
+    
+    // Add stone background for lives
+    this.createStoneBackground(this.livesContainer, 0, 0, 4, 2);
     
     this.livesText = this.add.text(0, 0, '❤️ 3', {
-      fontSize: '18px',
+      fontSize: '16px',
       fontFamily: 'Arial',
       color: '#000000',
       stroke: '#ffffff',
-      strokeThickness: 2
+      strokeThickness: 2,
+      fontStyle: 'bold'
     });
     this.livesText.setOrigin(0.5);
     this.livesContainer.add(this.livesText);
 
-    // Timer display (with stone background)
-    this.timerContainer = this.add.container(600, 190);
-    this.timerContainer.setDepth(1000);
+    // Timer display (center, separate from question panel)
+    this.timerContainer = this.add.container(400, 115);
+    this.timerContainer.setDepth(1001);
     this.timerContainer.setScrollFactor(0);
-    this.createStoneBackground(this.timerContainer, 0, 0, 11, 3);
+    
+    // Add stone background for timer
+    this.createStoneBackground(this.timerContainer, 0, 0, 6, 2);
     
     this.timerText = this.add.text(0, 0, `Time: ${this.timeRemaining}s`, {
-      fontSize: '18px',
+      fontSize: '16px',
       fontFamily: 'Arial',
       color: '#000000',
       stroke: '#ffffff',
-      strokeThickness: 2
+      strokeThickness: 2,
+      fontStyle: 'bold'
     });
     this.timerText.setOrigin(0.5);
     this.timerContainer.add(this.timerText);
 
-    // Instructions (with stone background)
-    this.instructionsContainer = this.add.container(600, 230);
-    this.instructionsContainer.setDepth(1000);
-    this.instructionsContainer.setScrollFactor(0);
-    this.createStoneBackground(this.instructionsContainer, 0, 0, 40, 3);
-    
-    this.instructionsText = this.add.text(0, 0, 'Move with WASD/Arrows • Press SPACE to collect fruit', {
-      fontSize: '14px',
+    // Instructions (below question panel)
+    this.instructionsText = this.add.text(400, 155, 'Move with WASD/Arrows • Press SPACE to collect fruit', {
+      fontSize: '11px',
       fontFamily: 'Arial',
-      color: '#000000',
-      stroke: '#ffffff',
-      strokeThickness: 1
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 2,
+      backgroundColor: '#00000088',
+      padding: { x: 8, y: 3 }
     });
     this.instructionsText.setOrigin(0.5);
-    this.instructionsContainer.add(this.instructionsText);
+    this.instructionsText.setDepth(1000);
+    this.instructionsText.setScrollFactor(0);
 
-    // Pause hint
-    this.pauseHintText = this.add.text(600, 265, 'Press ESC to Pause', {
-      fontSize: '12px',
+    // Pause hint (moved down)
+    this.pauseHintText = this.add.text(400, 175, 'Press ESC to Pause', {
+      fontSize: '10px',
       fontFamily: 'Arial',
       color: '#aaaaaa',
       backgroundColor: '#00000088',
-      padding: { x: 8, y: 3 }
+      padding: { x: 6, y: 2 }
     });
     this.pauseHintText.setOrigin(0.5, 0);
     this.pauseHintText.setDepth(1000);
@@ -245,7 +252,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
   createPlayer() {
     // Use the Player class like village scenes do
     // Start player in the middle area, clearly visible on screen
-    this.player = new Player(this, 600, 550);
+    this.player = new Player(this, 400, 400);
     this.player.setDepth(200);
     
     // Ensure player stays within bounds (already handled by Player class)
@@ -254,7 +261,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
 
   createPauseMenu() {
     // Create pause menu container (hidden by default)
-    this.pauseMenuContainer = this.add.container(600, 400);
+    this.pauseMenuContainer = this.add.container(400, 300);
     this.pauseMenuContainer.setDepth(5000); // Very high depth to be above everything
     this.pauseMenuContainer.setScrollFactor(0);
     this.pauseMenuContainer.setVisible(false);
@@ -454,9 +461,9 @@ export default class FruitCollectorScene extends Phaser.Scene {
   spawnFruits() {
     const fruitColors = [0xFF6B6B, 0xFFD93D, 0x6BCF7F, 0x4D96FF];
     const letters = ['A', 'B', 'C', 'D'];
-    const spacing = 240;
-    const startX = 240; // Start position
-    const y = 450; // Position fruits in middle area
+    const spacing = 150;
+    const startX = 175; // Start position (centered: 400 - (3*150/2) = 175)
+    const y = 370; // Position fruits lower for better visibility
 
     this.currentQuestion.choices.forEach((choice, index) => {
       const x = startX + index * spacing;
@@ -674,14 +681,14 @@ export default class FruitCollectorScene extends Phaser.Scene {
     const percentage = totalQuestions > 0 ? Math.round((questionsAnswered / totalQuestions) * 100) : 0;
 
     // Create game over panel with stone background
-    const gameOverContainer = this.add.container(600, 400);
+    const gameOverContainer = this.add.container(400, 300);
     gameOverContainer.setDepth(2000);
-    this.createStoneBackground(gameOverContainer, 0, 0, 13, 10);
+    this.createStoneBackground(gameOverContainer, 0, 0, 16, 12);
 
     // Title
     const titleText = completed ? 'Completed!' : 'Game Over!';
     const titleColor = completed ? '#44ff44' : '#ff4444';
-    const title = this.add.text(0, -120, titleText, {
+    const title = this.add.text(0, -140, titleText, {
       fontSize: '48px',
       fontFamily: 'Arial',
       color: titleColor,
@@ -692,7 +699,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     gameOverContainer.add(title);
 
     // Stats
-    const stats = this.add.text(0, -30, 
+    const stats = this.add.text(0, -50,
       `Final Score: ${this.score}\nQuestions Answered: ${questionsAnswered}/${totalQuestions}\nAccuracy: ${percentage}%`, 
       {
         fontSize: '22px',
@@ -708,7 +715,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     gameOverContainer.add(stats);
 
     // Return button
-    const returnButton = this.add.text(0, 70, 'Return to Village', {
+    const returnButton = this.add.text(0, 50, 'Return to Village', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -735,7 +742,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     gameOverContainer.add(returnButton);
 
     // Retry button
-    const retryButton = this.add.text(0, 130, 'Play Again', {
+    const retryButton = this.add.text(0, 120, 'Play Again', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
