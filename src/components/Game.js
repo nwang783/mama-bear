@@ -44,6 +44,19 @@ function Game() {
     };
   }, []);
 
+  const handleFullscreen = () => {
+    const gameElement = gameRef.current;
+    if (!gameElement) return;
+
+    if (!document.fullscreenElement) {
+      gameElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
   return (
     <div className="game-container">
       <div className="game-header">
@@ -52,6 +65,9 @@ function Game() {
       </div>
       <div ref={gameRef} className="game-canvas" />
       <div className="game-footer">
+        <button onClick={handleFullscreen} className="fullscreen-button">
+          ⛶ Fullscreen
+        </button>
         <button onClick={() => window.location.href = '/'} className="back-button">
           ← Back to Home
         </button>

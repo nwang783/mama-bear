@@ -19,94 +19,83 @@ export default class Village extends Phaser.GameObjects.Container {
     this.createBuilding();
     this.createInteractionZone();
 
-    // Depth for layering
-    this.setDepth(50);
+    // Depth for layering - higher than trees (which are at depth 5)
+    this.setDepth(150);
 
     // Interaction state
     this.isPlayerNearby = false;
   }
 
   createBuilding() {
-    const { BUILDING_WIDTH, BUILDING_HEIGHT, ROOF_HEIGHT } = GAME_CONFIG.VILLAGE;
+    const tileSize = 16;
+    
+    // House pattern as 4x3 grid (from upper left):
+    // Row 1: 52, 53, 54, 55
+    // Row 2: 64, 65, 66, 67
+    // Row 3: 76, 77, 78, 79
+    const housePattern = [
+      [52, 53, 54, 55],
+      [64, 65, 66, 67],
+      [76, 77, 78, 79]
+    ];
 
-    // Create building base
-    const building = this.scene.add.rectangle(
-      0, 
-      0, 
-      BUILDING_WIDTH, 
-      BUILDING_HEIGHT, 
-      this.villageConfig.color
+    const buildingWidth = 4;
+    const buildingHeight = 3;
+    const building = this.scene.add.container(0, 0);
+
+    // Build house from pattern
+    for (let row = 0; row < buildingHeight; row++) {
+      for (let col = 0; col < buildingWidth; col++) {
+        const tileNum = housePattern[row][col].toString().padStart(4, '0');
+        const tile = this.scene.add.image(
+          (col - buildingWidth/2) * tileSize + tileSize/2,
+          (row - buildingHeight/2) * tileSize + tileSize/2,
+          `tile_${tileNum}`
+        );
+        building.add(tile);
+      }
+    }
+
+    // Add emoji sign above building (smaller, more integrated)
+    const emoji = this.scene.add.text(
+      0,
+      -(buildingHeight/2) * tileSize - 18,
+      this.villageConfig.emoji,
+      { 
+        fontSize: '24px',
+        resolution: 2 // Sharper rendering
+      }
     );
-    building.setStrokeStyle(4, 0x000000);
-
-    // Create roof (triangle)
-    const roof = this.scene.add.triangle(
-      0,
-      -BUILDING_HEIGHT / 2 - ROOF_HEIGHT / 2,
-      0,
-      0,
-      -BUILDING_WIDTH / 2 - 10,
-      ROOF_HEIGHT,
-      BUILDING_WIDTH / 2 + 10,
-      ROOF_HEIGHT,
-      this.villageConfig.color
-    );
-    roof.setStrokeStyle(4, 0x000000);
-
-    // Add door
-    const door = this.scene.add.rectangle(
-      0,
-      BUILDING_HEIGHT / 4,
-      30,
-      50,
-      0x8b4513
-    );
-    door.setStrokeStyle(2, 0x000000);
-
-    // Add windows
-    const windowLeft = this.scene.add.rectangle(-30, -10, 25, 25, 0xffffff);
-    windowLeft.setStrokeStyle(2, 0x000000);
-    const windowRight = this.scene.add.rectangle(30, -10, 25, 25, 0xffffff);
-    windowRight.setStrokeStyle(2, 0x000000);
-
-    // Add emoji sign
-    const emoji = this.scene.add.text(0, -BUILDING_HEIGHT / 2 - ROOF_HEIGHT - 20, this.villageConfig.emoji, {
-      fontSize: '48px'
-    });
     emoji.setOrigin(0.5);
+    emoji.setDepth(200); // Very high depth to ensure it's above everything
+    building.add(emoji);
 
-    // Add village name plate
+    // Add village name plate below building with pixel-art styling
     const namePlate = this.scene.add.text(
       0,
-      BUILDING_HEIGHT / 2 + 30,
+      (buildingHeight/2) * tileSize + 12,
       this.villageConfig.name,
       {
-        fontSize: '20px',
-        fontFamily: 'Arial',
+        fontSize: '12px',
+        fontFamily: 'monospace', // More pixel-art like
         color: '#ffffff',
         backgroundColor: '#000000',
-        padding: { x: 15, y: 8 }
+        padding: { x: 8, y: 4 },
+        resolution: 2 // Sharper rendering
       }
     );
     namePlate.setOrigin(0.5);
+    namePlate.setDepth(200); // Very high depth to ensure it's above everything
+    building.add(namePlate);
 
-    // Add path/ground in front of building
-    const path = this.scene.add.rectangle(
-      0,
-      BUILDING_HEIGHT / 2 + 15,
-      BUILDING_WIDTH + 40,
-      20,
-      0x8b7355
-    );
-    path.setStrokeStyle(2, 0x654321);
-    path.setDepth(-1);
-
-    // Add all to container
-    this.add([path, building, roof, door, windowLeft, windowRight, emoji, namePlate]);
+    // Add the building container to this village container
+    this.add(building);
+    
+    // Set higher depth for the building so text is visible
+    building.setDepth(100);
 
     // Store references
-    this.building = building;
-    this.roof = roof;
+    this.buildingContainer = building;
     this.emoji = emoji;
   }
 
@@ -154,7 +143,7 @@ export default class Village extends Phaser.GameObjects.Container {
   onPlayerEnter() {
     // Add glow effect to building
     this.scene.tweens.add({
-      targets: [this.building, this.roof],
+      targets: this.buildingContainer,
       scaleX: 1.05,
       scaleY: 1.05,
       duration: 200,
@@ -174,7 +163,7 @@ export default class Village extends Phaser.GameObjects.Container {
   onPlayerExit() {
     // Remove glow effect
     this.scene.tweens.add({
-      targets: [this.building, this.roof],
+      targets: this.buildingContainer,
       scaleX: 1,
       scaleY: 1,
       duration: 200,

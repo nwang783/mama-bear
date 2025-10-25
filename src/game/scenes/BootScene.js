@@ -13,7 +13,7 @@ export default class BootScene extends Phaser.Scene {
     const loadingText = this.add.text(
       this.cameras.main.centerX,
       this.cameras.main.centerY,
-      'Loading...',
+      'Loading Assets...',
       {
         fontSize: '32px',
         fontFamily: 'Arial',
@@ -22,21 +22,97 @@ export default class BootScene extends Phaser.Scene {
     );
     loadingText.setOrigin(0.5);
 
-    // Here you would load any assets (images, spritesheets, audio, etc.)
-    // For now, we're using emoji and simple shapes, so no assets needed
+    // Load character spritesheet
+    this.load.spritesheet('player', 
+      'Sprout Lands - Sprites - Basic pack/Characters/Basic Charakter Spritesheet.png',
+      { frameWidth: 48, frameHeight: 48 }
+    );
+
+    // Load environment objects
+    this.load.image('grass_biome', 
+      'Sprout Lands - Sprites - Basic pack/Objects/Basic_Grass_Biom_things.png'
+    );
     
-    // Example for future:
-    // this.load.image('tree', 'assets/tree.png');
-    // this.load.spritesheet('player', 'assets/player.png', { frameWidth: 32, frameHeight: 32 });
+    this.load.image('plants', 
+      'Sprout Lands - Sprites - Basic pack/Objects/Basic_Plants.png'
+    );
+
+    // Load tilesets
+    this.load.image('grass_tileset', 
+      'Sprout Lands - Sprites - Basic pack/Tilesets/Grass.png'
+    );
+
+    this.load.image('hills', 
+      'Sprout Lands - Sprites - Basic pack/Tilesets/Hills.png'
+    );
+
+    // Load furniture for buildings
+    this.load.image('furniture', 
+      'Sprout Lands - Sprites - Basic pack/Objects/Basic_Furniture.png'
+    );
+
+    // Load Kenney Tiny Town tiles for buildings and structures
+    for (let i = 0; i <= 131; i++) {
+      const tileNum = i.toString().padStart(4, '0');
+      this.load.image(`tile_${tileNum}`, 
+        `kenney_tiny-town/Tiles/tile_${tileNum}.png`
+      );
+    }
   }
 
   create() {
-    // Initialize game data or global state here if needed
+    // Create player animations
+    this.createPlayerAnimations();
     
     // Start the main world scene
     this.scene.start('WorldScene');
     
     // Launch UI scene as overlay
     this.scene.launch('UIScene');
+  }
+
+  createPlayerAnimations() {
+    // Idle animation (frame 0)
+    this.anims.create({
+      key: 'idle-down',
+      frames: [{ key: 'player', frame: 0 }],
+      frameRate: 1
+    });
+
+    this.anims.create({
+      key: 'idle-up',
+      frames: [{ key: 'player', frame: 6 }],
+      frameRate: 1
+    });
+
+    this.anims.create({
+      key: 'idle-side',
+      frames: [{ key: 'player', frame: 3 }],
+      frameRate: 1
+    });
+
+    // Walk down
+    this.anims.create({
+      key: 'walk-down',
+      frames: this.anims.generateFrameNumbers('player', { start: 0, end: 2 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    // Walk side
+    this.anims.create({
+      key: 'walk-side',
+      frames: this.anims.generateFrameNumbers('player', { start: 3, end: 5 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    // Walk up
+    this.anims.create({
+      key: 'walk-up',
+      frames: this.anims.generateFrameNumbers('player', { start: 6, end: 8 }),
+      frameRate: 8,
+      repeat: -1
+    });
   }
 }
