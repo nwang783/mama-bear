@@ -268,8 +268,8 @@ export default class FruitCollectorScene extends Phaser.Scene {
     
     console.log('Pause menu created');
 
-    // Create stone tile background (using Kenney tiles)
-    this.createStoneBackground(this.pauseMenuContainer, 0, 0, 11, 8);
+    // Create stone tile background (using Kenney tiles) - larger
+    this.createStoneBackground(this.pauseMenuContainer, 0, 0, 15, 11);
 
     // Pause title
     const pauseTitle = this.add.text(0, -130, 'PAUSED', {
@@ -450,7 +450,6 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.fruits.forEach(fruit => {
       if (fruit.sprite) fruit.sprite.destroy();
       if (fruit.text) fruit.text.destroy();
-      if (fruit.glow) fruit.glow.destroy();
     });
     this.fruits = [];
 
@@ -459,7 +458,12 @@ export default class FruitCollectorScene extends Phaser.Scene {
   }
 
   spawnFruits() {
-    const fruitColors = [0xFF6B6B, 0xFFD93D, 0x6BCF7F, 0x4D96FF];
+    // Food sprite options (single tiles):
+    // Pizza: 106
+    // Sushi: 103, 104
+    // Burger: 91
+    const foodFrames = [106, 103, 104, 91];
+
     const letters = ['A', 'B', 'C', 'D'];
     const spacing = 150;
     const startX = 175; // Start position (centered: 400 - (3*150/2) = 175)
@@ -468,34 +472,35 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.currentQuestion.choices.forEach((choice, index) => {
       const x = startX + index * spacing;
       
-      // Create fruit sprite (circle)
-      const fruitColor = fruitColors[index % fruitColors.length];
-      const fruitSprite = this.add.circle(x, y, 35, fruitColor);
-      fruitSprite.setStrokeStyle(3, 0x000000);
-      fruitSprite.setDepth(150); // Higher depth to ensure visibility
+      // Randomly select a food sprite
+      const foodFrame = Phaser.Math.RND.pick(foodFrames);
+      const foodKey = `tile_food_${foodFrame.toString().padStart(4, '0')}`;
+      
+      // Create food sprite
+      const foodSprite = this.add.image(x, y, foodKey);
+      foodSprite.setScale(2.5); // Make it bigger and more visible
+      foodSprite.setDepth(150);
 
-      // Add letter text on fruit (A, B, C, D)
-      const letterText = this.add.text(x, y, letters[index], {
-        fontSize: '32px',
+      // Add letter text on food (A, B, C, D)
+      const letterText = this.add.text(x, y + 35, letters[index], {
+        fontSize: '28px',
         fontFamily: 'Arial',
-        color: '#000000',
+        color: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 4,
         fontStyle: 'bold'
       });
       letterText.setOrigin(0.5);
-      letterText.setDepth(151); // Higher depth than fruit
+      letterText.setDepth(151); // Higher depth than food
 
-      // Enable physics
-      this.physics.add.existing(fruitSprite, true); // Static body
+      // Enable physics on the food sprite
+      this.physics.add.existing(foodSprite, true); // Static body
 
-      // Add glow effect
-      const glow = this.add.circle(x, y, 40, fruitColor, 0.3);
-      glow.setDepth(149); // Just below fruit
-      
+      // Add glow/bounce animation to make it more attractive
       this.tweens.add({
-        targets: glow,
-        alpha: 0.1,
-        scale: 1.2,
-        duration: 1000,
+        targets: foodSprite,
+        y: y - 8,
+        duration: 800,
         yoyo: true,
         repeat: -1,
         ease: 'Sine.easeInOut'
@@ -503,15 +508,14 @@ export default class FruitCollectorScene extends Phaser.Scene {
 
       // Store fruit data
       this.fruits.push({
-        sprite: fruitSprite,
+        sprite: foodSprite,
         text: letterText,
-        glow: glow,
         choiceIndex: index,
         isCorrect: index === this.currentQuestion.correctIndex
       });
     });
 
-    console.log(`Spawned ${this.fruits.length} fruits at y=${y}`);
+    console.log(`Spawned ${this.fruits.length} food items at y=${y}`);
   }
 
   startTimer() {
@@ -651,7 +655,6 @@ export default class FruitCollectorScene extends Phaser.Scene {
     // Remove collected fruit
     if (fruit.sprite) fruit.sprite.destroy();
     if (fruit.text) fruit.text.destroy();
-    if (fruit.glow) fruit.glow.destroy();
     
     const index = this.fruits.indexOf(fruit);
     if (index > -1) {
@@ -671,7 +674,6 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.fruits.forEach(fruit => {
       if (fruit.sprite) fruit.sprite.destroy();
       if (fruit.text) fruit.text.destroy();
-      if (fruit.glow) fruit.glow.destroy();
     });
     this.fruits = [];
 
@@ -680,10 +682,10 @@ export default class FruitCollectorScene extends Phaser.Scene {
     const totalQuestions = this.questions.length;
     const percentage = totalQuestions > 0 ? Math.round((questionsAnswered / totalQuestions) * 100) : 0;
 
-    // Create game over panel with stone background
+    // Create game over panel with stone background (larger)
     const gameOverContainer = this.add.container(400, 300);
     gameOverContainer.setDepth(2000);
-    this.createStoneBackground(gameOverContainer, 0, 0, 16, 12);
+    this.createStoneBackground(gameOverContainer, 0, 0, 20, 14);
 
     // Title
     const titleText = completed ? 'Completed!' : 'Game Over!';
