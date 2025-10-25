@@ -46,31 +46,43 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   createBackground() {
-    // Create sky background
-    const sky = this.add.rectangle(
-      GAME_CONFIG.WORLD.WIDTH / 2,
-      GAME_CONFIG.WORLD.HEIGHT / 2,
-      GAME_CONFIG.WORLD.WIDTH,
-      GAME_CONFIG.WORLD.HEIGHT,
-      0x87ceeb
-    );
-    sky.setDepth(-100);
+    // Create varied tiled grass background using Kenney tiles
+    const tileSize = 16; // Kenney tiles are 16x16
+    const tilesX = Math.ceil(GAME_CONFIG.WORLD.WIDTH / tileSize);
+    const tilesY = Math.ceil(GAME_CONFIG.WORLD.HEIGHT / tileSize);
 
-    // Add ground
-    const ground = this.add.rectangle(
-      GAME_CONFIG.WORLD.WIDTH / 2,
-      GAME_CONFIG.WORLD.HEIGHT - 50,
-      GAME_CONFIG.WORLD.WIDTH,
-      100,
-      0x228b22
-    );
-    ground.setDepth(-50);
+    // Use first 3 grass tiles for variety (tiles 0, 1, 2)
+    const grassTiles = ['tile_0000', 'tile_0001', 'tile_0002'];
 
-    // Add some clouds
-    for (let i = 0; i < 10; i++) {
-      const cloudX = Phaser.Math.Between(100, GAME_CONFIG.WORLD.WIDTH - 100);
-      const cloudY = Phaser.Math.Between(50, 300);
-      this.createCloud(cloudX, cloudY);
+    // Create grass pattern with random variation
+    for (let x = 0; x < tilesX; x++) {
+      for (let y = 0; y < tilesY; y++) {
+        // Pick a random grass tile for natural variation
+        const tileKey = Phaser.Utils.Array.GetRandom(grassTiles);
+        const grassTile = this.add.image(x * tileSize, y * tileSize, tileKey);
+        grassTile.setOrigin(0, 0);
+        grassTile.setDepth(-100);
+      }
+    }
+
+    // Add some decorative patches using tile_0003 (darker grass or flowers)
+    for (let i = 0; i < 50; i++) {
+      const patchX = Phaser.Math.Between(0, GAME_CONFIG.WORLD.WIDTH - 32);
+      const patchY = Phaser.Math.Between(0, GAME_CONFIG.WORLD.HEIGHT - 32);
+      
+      // Create small patches (2x2 tiles)
+      for (let px = 0; px < 2; px++) {
+        for (let py = 0; py < 2; py++) {
+          const patch = this.add.image(
+            patchX + (px * tileSize), 
+            patchY + (py * tileSize), 
+            'tile_0003'
+          );
+          patch.setOrigin(0, 0);
+          patch.setAlpha(0.7);
+          patch.setDepth(-95);
+        }
+      }
     }
   }
 

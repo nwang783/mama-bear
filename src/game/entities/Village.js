@@ -27,86 +27,94 @@ export default class Village extends Phaser.GameObjects.Container {
   }
 
   createBuilding() {
-    const { BUILDING_WIDTH, BUILDING_HEIGHT, ROOF_HEIGHT } = GAME_CONFIG.VILLAGE;
+    const tileSize = 16;
+    
+    // Build a cute house using Kenney tiles
+    // Different building styles per village
+    const buildingStyles = {
+      'reading': { base: 'tile_0066', roof: 'tile_0053', door: 'tile_0080' },  // Blue house
+      'math': { base: 'tile_0068', roof: 'tile_0055', door: 'tile_0082' },     // Yellow house
+      'finance': { base: 'tile_0070', roof: 'tile_0057', door: 'tile_0084' }   // Red house
+    };
 
-    // Create building base
-    const building = this.scene.add.rectangle(
-      0, 
-      0, 
-      BUILDING_WIDTH, 
-      BUILDING_HEIGHT, 
-      this.villageConfig.color
+    const style = buildingStyles[this.villageConfig.id] || buildingStyles['reading'];
+
+    // Create building structure (3x4 tiles)
+    const buildingWidth = 3;
+    const buildingHeight = 4;
+    const building = this.scene.add.container(0, 0);
+
+    // Build walls
+    for (let x = 0; x < buildingWidth; x++) {
+      for (let y = 1; y < buildingHeight; y++) {
+        const wall = this.scene.add.image(
+          (x - buildingWidth/2) * tileSize + tileSize/2,
+          (y - buildingHeight/2) * tileSize + tileSize/2,
+          style.base
+        );
+        building.add(wall);
+      }
+    }
+
+    // Add roof tiles
+    for (let x = 0; x < buildingWidth; x++) {
+      const roofTile = this.scene.add.image(
+        (x - buildingWidth/2) * tileSize + tileSize/2,
+        (0 - buildingHeight/2) * tileSize + tileSize/2,
+        style.roof
+      );
+      building.add(roofTile);
+    }
+
+    // Add door (bottom center)
+    const door = this.scene.add.image(
+      0,
+      (buildingHeight - 1 - buildingHeight/2) * tileSize + tileSize/2,
+      style.door
     );
-    building.setStrokeStyle(4, 0x000000);
+    building.add(door);
 
-    // Create roof (triangle)
-    const roof = this.scene.add.triangle(
+    // Add emoji sign above building
+    const emoji = this.scene.add.text(
       0,
-      -BUILDING_HEIGHT / 2 - ROOF_HEIGHT / 2,
-      0,
-      0,
-      -BUILDING_WIDTH / 2 - 10,
-      ROOF_HEIGHT,
-      BUILDING_WIDTH / 2 + 10,
-      ROOF_HEIGHT,
-      this.villageConfig.color
+      -(buildingHeight/2) * tileSize - 20,
+      this.villageConfig.emoji,
+      { fontSize: '32px' }
     );
-    roof.setStrokeStyle(4, 0x000000);
-
-    // Add door
-    const door = this.scene.add.rectangle(
-      0,
-      BUILDING_HEIGHT / 4,
-      30,
-      50,
-      0x8b4513
-    );
-    door.setStrokeStyle(2, 0x000000);
-
-    // Add windows
-    const windowLeft = this.scene.add.rectangle(-30, -10, 25, 25, 0xffffff);
-    windowLeft.setStrokeStyle(2, 0x000000);
-    const windowRight = this.scene.add.rectangle(30, -10, 25, 25, 0xffffff);
-    windowRight.setStrokeStyle(2, 0x000000);
-
-    // Add emoji sign
-    const emoji = this.scene.add.text(0, -BUILDING_HEIGHT / 2 - ROOF_HEIGHT - 20, this.villageConfig.emoji, {
-      fontSize: '48px'
-    });
     emoji.setOrigin(0.5);
+    building.add(emoji);
 
-    // Add village name plate
+    // Add village name plate below building
     const namePlate = this.scene.add.text(
       0,
-      BUILDING_HEIGHT / 2 + 30,
+      (buildingHeight/2) * tileSize + 15,
       this.villageConfig.name,
       {
-        fontSize: '20px',
+        fontSize: '16px',
         fontFamily: 'Arial',
         color: '#ffffff',
         backgroundColor: '#000000',
-        padding: { x: 15, y: 8 }
+        padding: { x: 10, y: 5 }
       }
     );
     namePlate.setOrigin(0.5);
+    building.add(namePlate);
 
-    // Add path/ground in front of building
-    const path = this.scene.add.rectangle(
-      0,
-      BUILDING_HEIGHT / 2 + 15,
-      BUILDING_WIDTH + 40,
-      20,
-      0x8b7355
-    );
-    path.setStrokeStyle(2, 0x654321);
-    path.setDepth(-1);
+    // Add path tiles in front of building
+    for (let i = -1; i <= 1; i++) {
+      const pathTile = this.scene.add.image(
+        i * tileSize,
+        (buildingHeight/2) * tileSize + tileSize,
+        'tile_0016' // Stone path tile
+      );
+      building.add(pathTile);
+    }
 
-    // Add all to container
-    this.add([path, building, roof, door, windowLeft, windowRight, emoji, namePlate]);
+    // Add the building container to this village container
+    this.add(building);
 
     // Store references
-    this.building = building;
-    this.roof = roof;
+    this.buildingContainer = building;
     this.emoji = emoji;
   }
 
@@ -154,7 +162,7 @@ export default class Village extends Phaser.GameObjects.Container {
   onPlayerEnter() {
     // Add glow effect to building
     this.scene.tweens.add({
-      targets: [this.building, this.roof],
+      targets: this.buildingContainer,
       scaleX: 1.05,
       scaleY: 1.05,
       duration: 200,
@@ -174,7 +182,7 @@ export default class Village extends Phaser.GameObjects.Container {
   onPlayerExit() {
     // Remove glow effect
     this.scene.tweens.add({
-      targets: [this.building, this.roof],
+      targets: this.buildingContainer,
       scaleX: 1,
       scaleY: 1,
       duration: 200,
