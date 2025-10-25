@@ -242,8 +242,24 @@ export default class WorldScene extends Phaser.Scene {
 
   handleVillageEntered(villageConfig) {
     console.log(`Player entered ${villageConfig.name}!`);
-    // Here you would transition to the village's game scene
-    // For now, just show an alert
-    alert(`Welcome to ${villageConfig.name}!\n\n${villageConfig.description}\n\nGame activities coming soon!`);
+    
+    // Determine which village scene to load based on village ID
+    const sceneMap = {
+      'math': 'MathVillageScene',
+      'reading': 'ReadingVillageScene',
+      'finance': 'FinanceVillageScene'
+    };
+
+    const sceneKey = sceneMap[villageConfig.id];
+    
+    if (sceneKey) {
+      // Fade out and transition to village scene
+      this.cameras.main.fade(500, 0, 0, 0);
+      this.cameras.main.once('camerafadeoutcomplete', () => {
+        this.scene.start(sceneKey, { villageConfig });
+      });
+    } else {
+      console.error(`Unknown village ID: ${villageConfig.id}`);
+    }
   }
 }
