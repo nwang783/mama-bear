@@ -58,6 +58,14 @@ export default class BootScene extends Phaser.Scene {
         `kenney_tiny-town/Tiles/tile_${tileNum}.png`
       );
     }
+
+    // Load Kenney Food tiles for minigames
+    for (let i = 0; i <= 111; i++) {
+      const tileNum = i.toString().padStart(4, '0');
+      this.load.image(`tile_food_${tileNum}`, 
+        `kenney_pixel-platformer-food-expansion/Tiles/tile_${tileNum}.png`
+      );
+    }
   }
 
   create() {
