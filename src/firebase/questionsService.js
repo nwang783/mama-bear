@@ -174,6 +174,50 @@ export function clearCache(subject = null) {
 }
 
 /**
+ * Get questions for a specific question set
+ * 
+ * @param {string} questionSetId - ID of the question set
+ * @returns {Promise<Array>} Array of question objects ordered by orderInSet
+ */
+export async function getQuestionsForSet(questionSetId) {
+  try {
+    console.log(`Fetching questions for set ${questionSetId} from Firebase...`);
+
+    // Query Firestore for questions in this set
+    const questionsRef = collection(db, 'questions');
+    const q = query(
+      questionsRef,
+      where('questionSetId', '==', questionSetId),
+      orderBy('orderInSet', 'asc')
+    );
+
+    const querySnapshot = await getDocs(q);
+    const questions = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      questions.push({
+        id: doc.id,
+        question: data.question,
+        choices: data.choices,
+        correctIndex: data.correctIndex,
+        subject: data.subject,
+        questionSetId: data.questionSetId,
+        orderInSet: data.orderInSet,
+        difficulty: data.difficulty
+      });
+    });
+
+    console.log(`Fetched ${questions.length} questions for set ${questionSetId}`);
+    return questions;
+
+  } catch (error) {
+    console.error('Error fetching questions for set:', error);
+    throw error;
+  }
+}
+
+/**
  * Get cache status for debugging
  */
 export function getCacheStatus() {
