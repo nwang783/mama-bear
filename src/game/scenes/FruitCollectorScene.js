@@ -682,15 +682,15 @@ export default class FruitCollectorScene extends Phaser.Scene {
     const totalQuestions = this.questions.length;
     const percentage = totalQuestions > 0 ? Math.round((questionsAnswered / totalQuestions) * 100) : 0;
 
-    // Create game over panel with stone background (larger)
+    // Create game over panel with stone background (same size as pause menu)
     const gameOverContainer = this.add.container(400, 300);
     gameOverContainer.setDepth(2000);
-    this.createStoneBackground(gameOverContainer, 0, 0, 20, 14);
+    this.createStoneBackground(gameOverContainer, 0, 0, 22, 29);
 
     // Title
     const titleText = completed ? 'Completed!' : 'Game Over!';
     const titleColor = completed ? '#44ff44' : '#ff4444';
-    const title = this.add.text(0, -140, titleText, {
+    const title = this.add.text(0, -150, titleText, {
       fontSize: '48px',
       fontFamily: 'Arial',
       color: titleColor,
@@ -701,14 +701,14 @@ export default class FruitCollectorScene extends Phaser.Scene {
     gameOverContainer.add(title);
 
     // Stats
-    const stats = this.add.text(0, -50,
+    const stats = this.add.text(0, -70,
       `Final Score: ${this.score}\nQuestions Answered: ${questionsAnswered}/${totalQuestions}\nAccuracy: ${percentage}%`, 
       {
-        fontSize: '22px',
+        fontSize: '18px',
         fontFamily: 'Arial',
         color: '#ffffff',
         stroke: '#000000',
-        strokeThickness: 4,
+        strokeThickness: 3,
         align: 'center',
         lineSpacing: 8
       }
@@ -717,7 +717,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     gameOverContainer.add(stats);
 
     // Return button
-    const returnButton = this.add.text(0, 50, 'Return to Village', {
+    const returnButton = this.add.text(0, 30, 'Return to Village', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -744,7 +744,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     gameOverContainer.add(returnButton);
 
     // Retry button
-    const retryButton = this.add.text(0, 120, 'Play Again', {
+    const retryButton = this.add.text(0, 105, 'Play Again', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
