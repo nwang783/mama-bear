@@ -268,11 +268,11 @@ export default class FruitCollectorScene extends Phaser.Scene {
     
     console.log('Pause menu created');
 
-    // Create stone tile background (using Kenney tiles) - larger
-    this.createStoneBackground(this.pauseMenuContainer, 0, 0, 15, 11);
+    // Create stone tile background (using Kenney tiles) - extra large and even taller
+    this.createStoneBackground(this.pauseMenuContainer, 0, 0, 22, 29);
 
     // Pause title
-    const pauseTitle = this.add.text(0, -130, 'PAUSED', {
+    const pauseTitle = this.add.text(0, -150, 'PAUSED', {
       fontSize: '48px',
       fontFamily: 'Arial',
       color: '#ffdd44',
@@ -283,12 +283,12 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.pauseMenuContainer.add(pauseTitle);
 
     // Current stats
-    const statsText = this.add.text(0, -60, '', {
+    const statsText = this.add.text(0, -70, '', {
       fontSize: '18px',
       fontFamily: 'Arial',
       color: '#ffffff',
       align: 'center',
-      lineSpacing: 6,
+      lineSpacing: 8,
       stroke: '#000000',
       strokeThickness: 3
     });
@@ -297,7 +297,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.pauseStatsText = statsText;
 
     // Resume button
-    const resumeButton = this.add.text(0, 20, 'Resume (ESC)', {
+    const resumeButton = this.add.text(0, 30, 'Resume (ESC)', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -318,7 +318,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.pauseMenuContainer.add(resumeButton);
 
     // Restart button
-    const restartButton = this.add.text(0, 80, 'Restart Game', {
+    const restartButton = this.add.text(0, 105, 'Restart Game', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -339,7 +339,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.pauseMenuContainer.add(restartButton);
 
     // Back to Village button
-    const backButton = this.add.text(0, 140, 'Back to Village', {
+    const backButton = this.add.text(0, 180, 'Back to Village', {
       fontSize: '22px',
       fontFamily: 'Arial',
       color: '#ffffff',
