@@ -11,19 +11,25 @@ class FruitCatchScene extends Phaser.Scene {
     this.fruitSpeed = 100; // Starting speed (faster)
     this.maxFruitSpeed = 200; // Maximum speed cap
     this.questionsAnswered = 0;
+    this.isPaused = false;
   }
 
   preload() {
-    // Create simple shapes as placeholders for tree, fruits, and bucket
-    this.createAssets();
+    // Load grass tile
+    this.load.image('grass', '/Sprout Lands - Sprites - Basic pack/Tilesets/Grass.png');
+    // Load foliage/trees
+    this.load.image('foliage', '/Sprout Lands - Sprites - Basic pack/Objects/Basic_Grass_Biom_things.png');
   }
 
   create() {
     // Background
     this.cameras.main.setBackgroundColor('#87ceeb');
 
-    // Draw tree
-    this.drawTree();
+    // Draw grass at bottom
+    this.drawGrass();
+
+    // Draw forest at top
+    this.drawForest();
 
     // Create bucket (player)
     this.bucket = this.add.rectangle(400, 530, 70, 60, 0x8B4513);
@@ -44,13 +50,23 @@ class FruitCatchScene extends Phaser.Scene {
     });
 
     // Lives display
-    this.livesText = this.add.text(700, 20, '❤️ ' + this.lives, {
+    this.livesText = this.add.text(650, 20, '❤️ ' + this.lives, {
       fontSize: '24px',
       fontFamily: 'Arial',
       color: '#ffffff',
       stroke: '#000000',
       strokeThickness: 4
     });
+
+    // Pause button
+    this.pauseButton = this.add.text(750, 20, '⏸', {
+      fontSize: '32px',
+      fontFamily: 'Arial',
+      backgroundColor: '#000000',
+      padding: { x: 8, y: 2 }
+    });
+    this.pauseButton.setInteractive({ useHandCursor: true });
+    this.pauseButton.on('pointerdown', () => this.togglePause());
 
     // Question container at bottom
     this.questionBg = this.add.rectangle(400, 560, 760, 60, 0x000000, 0.7);
@@ -77,23 +93,39 @@ class FruitCatchScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 800, 600);
   }
 
-  createAssets() {
-    // This method creates simple graphic assets
-    // In a real game, you would load actual images
+  drawGrass() {
+    // Create grass tiles at the bottom of the screen
+    const tileSize = 64;
+    const grassY = 550;
+    for (let x = 0; x < 800; x += tileSize) {
+      const grass = this.add.image(x, grassY, 'grass');
+      grass.setOrigin(0, 0);
+      grass.setDisplaySize(tileSize, tileSize);
+    }
   }
 
-  drawTree() {
-    // Tree trunk
-    const trunk = this.add.rectangle(400, 100, 60, 120, 0x8B4513);
-    trunk.setStrokeStyle(2, 0x000000);
+  drawForest() {
+    // Create a forest across the top using foliage sprites
+    // The spritesheet has trees - we'll extract individual trees
+    const treePositions = [
+      { x: 100, y: 50 },
+      { x: 200, y: 40 },
+      { x: 300, y: 55 },
+      { x: 400, y: 45 },
+      { x: 500, y: 50 },
+      { x: 600, y: 40 },
+      { x: 700, y: 55 }
+    ];
 
-    // Tree foliage (3 circles)
-    const foliage1 = this.add.circle(370, 50, 50, 0x228B22);
-    foliage1.setStrokeStyle(2, 0x000000);
-    const foliage2 = this.add.circle(400, 30, 60, 0x2E8B57);
-    foliage2.setStrokeStyle(2, 0x000000);
-    const foliage3 = this.add.circle(430, 50, 50, 0x228B22);
-    foliage3.setStrokeStyle(2, 0x000000);
+    treePositions.forEach(pos => {
+      // Create green foliage circles to represent trees
+      const foliage = this.add.circle(pos.x, pos.y, 35, 0x228B22);
+      foliage.setStrokeStyle(2, 0x0d5c0d);
+      
+      // Add slight variation in size
+      const scale = Phaser.Math.FloatBetween(0.9, 1.2);
+      foliage.setScale(scale);
+    });
   }
 
   generateQuestion() {
@@ -177,7 +209,43 @@ class FruitCatchScene extends Phaser.Scene {
     this.fruits.push(fruit);
   }
 
+  togglePause() {
+    this.isPaused = !this.isPaused;
+
+    if (this.isPaused) {
+      // Pause the game
+      this.physics.pause();
+      this.time.paused = true;
+      this.pauseButton.setText('▶');
+
+      // Show pause overlay
+      this.pauseOverlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.5);
+      this.pauseText = this.add.text(400, 300, 'PAUSED', {
+        fontSize: '64px',
+        fontFamily: 'Arial',
+        color: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 6
+      });
+      this.pauseText.setOrigin(0.5);
+    } else {
+      // Resume the game
+      this.physics.resume();
+      this.time.paused = false;
+      this.pauseButton.setText('⏸');
+
+      // Remove pause overlay
+      if (this.pauseOverlay) {
+        this.pauseOverlay.destroy();
+        this.pauseText.destroy();
+      }
+    }
+  }
+
   update() {
+    // Don't update if paused
+    if (this.isPaused) return;
+
     // Check collisions and update fruit positions
     for (let i = this.fruits.length - 1; i >= 0; i--) {
       const fruit = this.fruits[i];
