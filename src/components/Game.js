@@ -6,6 +6,7 @@ import UIScene from '../game/scenes/UIScene';
 import MathVillageScene from '../game/scenes/MathVillageScene';
 import ReadingVillageScene from '../game/scenes/ReadingVillageScene';
 import FinanceVillageScene from '../game/scenes/FinanceVillageScene';
+import FruitCollectorScene from '../game/scenes/FruitCollectorScene';
 import { GAME_CONFIG } from '../game/config/gameConfig';
 import './Game.css';
 
@@ -27,7 +28,8 @@ function Game() {
           UIScene,
           MathVillageScene,
           ReadingVillageScene,
-          FinanceVillageScene
+          FinanceVillageScene,
+          FruitCollectorScene
         ],
         physics: {
           default: 'arcade',
