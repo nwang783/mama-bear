@@ -229,7 +229,7 @@ export default class VillageScene extends Phaser.Scene {
       GAME_CONFIG.VILLAGE_SCENE.HEIGHT
     );
 
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(1.5);
   }
 
   createTitleText() {

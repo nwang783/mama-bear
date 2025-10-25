@@ -199,7 +199,7 @@ export default class WorldScene extends Phaser.Scene {
     );
 
     // Optional: Add zoom
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(1.5);
   }
 
   update() {

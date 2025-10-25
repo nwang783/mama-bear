@@ -54,7 +54,7 @@
 
 /* the actual parent for Phaser */
 .canvas-holder {
-  width: min(92vw, 960px);
+  width: min(78vw, 816px);
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: #000;
