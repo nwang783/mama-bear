@@ -3,6 +3,9 @@ import Phaser from 'phaser';
 import BootScene from '../game/scenes/BootScene';
 import WorldScene from '../game/scenes/WorldScene';
 import UIScene from '../game/scenes/UIScene';
+import MathVillageScene from '../game/scenes/MathVillageScene';
+import ReadingVillageScene from '../game/scenes/ReadingVillageScene';
+import FinanceVillageScene from '../game/scenes/FinanceVillageScene';
 import { GAME_CONFIG } from '../game/config/gameConfig';
 import './Game.css';
 
@@ -18,7 +21,14 @@ function Game() {
         height: GAME_CONFIG.CANVAS.HEIGHT,
         parent: gameRef.current,
         backgroundColor: GAME_CONFIG.WORLD.BACKGROUND_COLOR,
-        scene: [BootScene, WorldScene, UIScene],
+        scene: [
+          BootScene,
+          WorldScene,
+          UIScene,
+          MathVillageScene,
+          ReadingVillageScene,
+          FinanceVillageScene
+        ],
         physics: {
           default: 'arcade',
           arcade: {
