@@ -36,7 +36,7 @@ export default class QuestionSetSelectionScene extends Phaser.Scene {
 
     try {
       // Fetch question sets from Firebase
-      this.questionSets = await getQuestionSetsBySubject(this.subject, 5);
+      this.questionSets = await getQuestionSetsBySubject(this.subject, 3);
       
       this.hideLoadingOverlay();
       
@@ -93,16 +93,16 @@ export default class QuestionSetSelectionScene extends Phaser.Scene {
   }
 
   createSelectionUI() {
-    // Main container centered in view
-    const mainContainer = this.add.container(400, 450);
+    // Main container centered in view (moved down 10 tiles = 160px from 210)
+    const mainContainer = this.add.container(400, 370);
     mainContainer.setDepth(100);
 
-    // Create stone background for modal (32 tiles wide x 48 tiles tall)
-    this.createStoneBackground(mainContainer, 0, 0, 32, 50);
+    // Create stone background for modal (32 tiles wide x 34 tiles tall)
+    this.createStoneBackground(mainContainer, 0, 0, 32, 34);
 
     // Title
     const emoji = this.getSubjectEmoji(this.subject);
-    const title = this.add.text(0, -360, `${emoji} Choose Question Set`, {
+    const title = this.add.text(0, -250, `${emoji} Choose Question Set`, {
       fontSize: '28px',
       fontFamily: 'Arial',
       color: '#ffdd44',
@@ -114,7 +114,7 @@ export default class QuestionSetSelectionScene extends Phaser.Scene {
     mainContainer.add(title);
 
     // Create set cards
-    const startY = -260;
+    const startY = -160;
     const cardSpacing = 120;
 
     this.questionSets.forEach((set, index) => {
@@ -122,8 +122,8 @@ export default class QuestionSetSelectionScene extends Phaser.Scene {
       this.createSetCard(mainContainer, set, 0, cardY);
     });
 
-    // Back button at bottom
-    this.createBackButton(mainContainer, 0, 360);
+    // Back button at bottom (moved closer to cards)
+    this.createBackButton(mainContainer, 0, 180);
   }
 
   createSetCard(container, set, x, y) {
