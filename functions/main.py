@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 from openai import OpenAI
 from typing import Literal
 import hashlib
-import json
 import io
 from datetime import datetime
 
@@ -115,8 +114,9 @@ def extract_questions_from_pdf(req: https_fn.CallableRequest):
             ]
         
         # First attempt with cost-efficient model
+        chosen_model = "gpt-4o-mini"
         response = client.responses.parse(
-            model="gpt-4o-mini",
+            model=chosen_model,
             input=build_input(),
             text_format=QuestionSet
         )
@@ -125,8 +125,9 @@ def extract_questions_from_pdf(req: https_fn.CallableRequest):
         # Fallback to gpt-4o if nothing extracted
         if not question_set_data or not getattr(question_set_data, "questions", None):
             print("No questions extracted with gpt-4o-mini; retrying with gpt-4o-2024-08-06")
+            chosen_model = "gpt-4o-2024-08-06"
             response = client.responses.parse(
-                model="gpt-4o-2024-08-06",
+                model=chosen_model,
                 input=build_input(),
                 text_format=QuestionSet
             )
@@ -165,7 +166,8 @@ def extract_questions_from_pdf(req: https_fn.CallableRequest):
                 "source": {
                     "pdf_path": storage_path,
                     "processed_at_iso": datetime.utcnow().isoformat(),
-                    "extraction_method": "gpt-4o-mini-structured-output"
+                    "extraction_method": "openai-structured-output",
+                    "model": chosen_model
                 },
                 "created_at": firestore.SERVER_TIMESTAMP,
                 "updated_at": firestore.SERVER_TIMESTAMP
