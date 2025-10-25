@@ -18,8 +18,8 @@ function Game() {
     if (gameRef.current && !phaserGameRef.current) {
       const config = {
         type: Phaser.AUTO,
-        width: 1200, // Larger canvas to accommodate minigames
-        height: 800,
+        width: 800,
+        height: 600,
         parent: gameRef.current,
         backgroundColor: GAME_CONFIG.WORLD.BACKGROUND_COLOR,
         scene: [
