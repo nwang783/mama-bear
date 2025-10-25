@@ -66,11 +66,24 @@ export default class BootScene extends Phaser.Scene {
         `kenney_pixel-platformer-food-expansion/Tiles/tile_${tileNum}.png`
       );
     }
+
+    // Load background music
+    this.load.audio('backgroundMusic', 'assets/audio/morning-background.mp3');
   }
 
   create() {
     // Create player animations
     this.createPlayerAnimations();
+    
+    // Start global background music (persists across all scenes)
+    const music = this.sound.add('backgroundMusic', {
+      loop: true,
+      volume: 0.5
+    });
+    music.play();
+    
+    // Store reference in game registry so other scenes can access if needed
+    this.game.registry.set('backgroundMusic', music);
     
     // Start the main world scene
     this.scene.start('WorldScene');

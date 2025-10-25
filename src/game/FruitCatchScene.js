@@ -11,9 +11,13 @@ class FruitCatchScene extends Phaser.Scene {
     this.fruitSpeed = 100; // Starting speed (faster)
     this.maxFruitSpeed = 200; // Maximum speed cap
     this.questionsAnswered = 0;
+    this.backgroundMusic = null;
   }
 
   preload() {
+    // Load background music
+    this.load.audio('backgroundMusic', '/assets/audio/morning-background.mp3');
+    
     // Create simple shapes as placeholders for tree, fruits, and bucket
     this.createAssets();
   }
@@ -21,6 +25,15 @@ class FruitCatchScene extends Phaser.Scene {
   create() {
     // Background
     this.cameras.main.setBackgroundColor('#87ceeb');
+
+    // Start background music
+    if (!this.backgroundMusic) {
+      this.backgroundMusic = this.sound.add('backgroundMusic', {
+        loop: true,
+        volume: 0.3
+      });
+      this.backgroundMusic.play();
+    }
 
     // Draw tree
     this.drawTree();
@@ -275,6 +288,11 @@ class FruitCatchScene extends Phaser.Scene {
   gameOver() {
     // Stop spawning
     this.time.removeAllEvents();
+
+    // Stop background music
+    if (this.backgroundMusic) {
+      this.backgroundMusic.stop();
+    }
 
     // Clear all fruits
     this.fruits.forEach(fruit => {
