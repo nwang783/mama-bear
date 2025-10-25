@@ -3,6 +3,17 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
+    // Question Sets collection rules
+    match /questionSets/{setId} {
+      // Allow anyone to read question sets
+      allow read: if true;
+      
+      // Allow writes for now (can restrict later)
+      allow create: if true;
+      allow update: if true;
+      allow delete: if false;
+    }
+    
     // Questions collection rules
     match /questions/{questionId} {
       // Allow anyone to read questions

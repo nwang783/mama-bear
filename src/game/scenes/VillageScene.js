@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import Player from '../entities/Player';
 import House from '../entities/House';
 import { GAME_CONFIG } from '../config/gameConfig';
-import { getQuestionsFromFirebase, getLocalQuestionsBySubject } from '../config/questionProviders';
 
 /**
  * Base village scene class - extended by specific village scenes
@@ -336,50 +335,23 @@ export default class VillageScene extends Phaser.Scene {
     });
   }
 
-  async handleHouseEntered(houseConfig) {
+  handleHouseEntered(houseConfig) {
     console.log(`Player entered ${houseConfig.name}!`);
     
     // Check if this house has a game scene
     if (houseConfig.gameScene) {
-      // If this is FruitCollectorScene, fetch questions from Firebase
+      // If this is FruitCollectorScene, show question set selection
       if (houseConfig.gameScene === 'FruitCollectorScene') {
         const subject = houseConfig.subject || this.villageConfig?.id || 'math';
         
-        // Show loading overlay
-        this.showLoadingOverlay();
+        // Launch the question set selection scene
+        const sceneData = {
+          subject: subject,
+          returnScene: this.scene.key,
+          villageConfig: this.villageConfig
+        };
         
-        try {
-          // Fetch questions from Firebase (with fallback to local)
-          const questions = await getQuestionsFromFirebase(subject, 10);
-          
-          // Hide loading overlay
-          this.hideLoadingOverlay();
-          
-          // Prepare scene data
-          const sceneData = {
-            returnScene: this.scene.key,
-            villageConfig: this.villageConfig,
-            questions: questions,
-            timeLimit: 60
-          };
-          
-          // Transition to the game scene
-          this.scene.start(houseConfig.gameScene, sceneData);
-        } catch (error) {
-          console.error('Error loading questions:', error);
-          this.hideLoadingOverlay();
-          
-          // Use local fallback on error
-          const questions = getLocalQuestionsBySubject(subject, 10);
-          const sceneData = {
-            returnScene: this.scene.key,
-            villageConfig: this.villageConfig,
-            questions: questions,
-            timeLimit: 60
-          };
-          
-          this.scene.start(houseConfig.gameScene, sceneData);
-        }
+        this.scene.start('QuestionSetSelectionScene', sceneData);
       } else {
         // For other game scenes, start normally
         const sceneData = {
@@ -392,56 +364,6 @@ export default class VillageScene extends Phaser.Scene {
     } else {
       // Game not yet implemented
       alert(`${houseConfig.name} is coming soon!\\n\\nThis minigame is currently under development.`);
-    }
-  }
-  
-  showLoadingOverlay() {
-    // Create loading overlay container
-    this.loadingOverlay = this.add.container(GAME_CONFIG.VILLAGE_SCENE.WIDTH / 2, GAME_CONFIG.VILLAGE_SCENE.HEIGHT / 2);
-    this.loadingOverlay.setDepth(10000);
-    this.loadingOverlay.setScrollFactor(0);
-    
-    // Semi-transparent background
-    const bg = this.add.rectangle(0, 0, GAME_CONFIG.VILLAGE_SCENE.WIDTH, GAME_CONFIG.VILLAGE_SCENE.HEIGHT, 0x000000, 0.7);
-    this.loadingOverlay.add(bg);
-    
-    // Loading text
-    const loadingText = this.add.text(0, -20, 'Loading Questions...', {
-      fontSize: '24px',
-      fontFamily: 'Arial',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 4
-    });
-    loadingText.setOrigin(0.5);
-    this.loadingOverlay.add(loadingText);
-    
-    // Animated dots
-    const dots = this.add.text(0, 20, '...', {
-      fontSize: '32px',
-      fontFamily: 'Arial',
-      color: '#ffffff'
-    });
-    dots.setOrigin(0.5);
-    this.loadingOverlay.add(dots);
-    
-    // Animate dots
-    this.loadingTween = this.tweens.add({
-      targets: dots,
-      alpha: 0.3,
-      duration: 500,
-      yoyo: true,
-      repeat: -1
-    });
-  }
-  
-  hideLoadingOverlay() {
-    if (this.loadingOverlay) {
-      if (this.loadingTween) {
-        this.loadingTween.remove();
-      }
-      this.loadingOverlay.destroy();
-      this.loadingOverlay = null;
     }
   }
 }
