@@ -7,10 +7,10 @@ export const GAME_CONFIG = {
     BACKGROUND_COLOR: '#87ceeb'
   },
 
-  // Canvas/viewport settings
+  // Canvas/viewport settings (YouTube-like 16:9 aspect ratio)
   CANVAS: {
-    WIDTH: 1000,
-    HEIGHT: 700
+    WIDTH: 800,
+    HEIGHT: 450
   },
 
   // Player settings
