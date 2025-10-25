@@ -64,7 +64,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
 
     // Setup camera
     this.cameras.main.setBounds(0, 0, 800, 450);
-    this.cameras.main.setZoom(1.0); // Normal zoom
+    this.cameras.main.setZoom(1.3); // Slightly zoomed in for better visibility
 
     // Setup pause key
     this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -114,34 +114,32 @@ export default class FruitCollectorScene extends Phaser.Scene {
 
   createUI() {
     // Question panel at top - using stone background
-    const panelHeight = 100;
-    const panelWidth = 780;
-    
-    // Create container for question panel
-    this.questionPanelContainer = this.add.container(400, 50);
+    // Create container for question panel (moved further down ~5 tiles)
+    this.questionPanelContainer = this.add.container(400, 170);
     this.questionPanelContainer.setDepth(1000);
     this.questionPanelContainer.setScrollFactor(0);
     
-    // Create stone background for question panel (48 tiles wide x 6 tiles tall - more compact)
-    this.createStoneBackground(this.questionPanelContainer, 0, 0, 48, 6);
+    // Create stone background for question panel (narrower to fit at zoom)
+    this.createStoneBackground(this.questionPanelContainer, 0, 0, 36, 6);
 
-    // Question text - at top of panel
-    this.questionText = this.add.text(0, -30, '', {
-      fontSize: '18px',
+    // Question text - adjusted position and size for visibility with zoom
+    this.questionText = this.add.text(0, -18, '', {
+      fontSize: '16px',
       fontFamily: 'Arial',
       color: '#000000',
       stroke: '#ffffff',
       strokeThickness: 2,
       align: 'center',
-      wordWrap: { width: 700 }
+      wordWrap: { width: 540 }
     });
     this.questionText.setOrigin(0.5);
     this.questionPanelContainer.add(this.questionText);
 
     // Choice texts - in a single row below question
     this.choiceTexts = [];
+    const spacing = 140; // tighter spacing to fit within the sign
     for (let i = 0; i < 4; i++) {
-      const x = -270 + i * 180; // Spread horizontally
+      const x = (-1.5 * spacing) + i * spacing; // centers 4 choices within panel
       const y = 10; // Below question
       const choiceText = this.add.text(x, y, '', {
         fontSize: '13px',
@@ -157,7 +155,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     }
 
     // Score display (bottom left, separate from question panel)
-    this.scoreContainer = this.add.container(80, 115);
+    this.scoreContainer = this.add.container(208, 115);
     this.scoreContainer.setDepth(1001);
     this.scoreContainer.setScrollFactor(0);
     
@@ -176,7 +174,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.scoreContainer.add(this.scoreText);
 
     // Lives display (bottom right, separate from question panel)
-    this.livesContainer = this.add.container(720, 115);
+    this.livesContainer = this.add.container(592, 115);
     this.livesContainer.setDepth(1001);
     this.livesContainer.setScrollFactor(0);
     
@@ -214,7 +212,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.timerContainer.add(this.timerText);
 
     // Instructions (below question panel)
-    this.instructionsText = this.add.text(400, 155, 'Move with WASD/Arrows • Press SPACE to collect fruit', {
+    this.instructionsText = this.add.text(400, 230, 'Move with WASD/Arrows • Press SPACE to collect fruit', {
       fontSize: '11px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -228,7 +226,7 @@ export default class FruitCollectorScene extends Phaser.Scene {
     this.instructionsText.setScrollFactor(0);
 
     // Pause hint (moved down)
-    this.pauseHintText = this.add.text(400, 175, 'Press ESC to Pause', {
+    this.pauseHintText = this.add.text(400, 245, 'Press ESC to Pause', {
       fontSize: '10px',
       fontFamily: 'Arial',
       color: '#aaaaaa',
