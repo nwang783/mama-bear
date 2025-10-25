@@ -24,6 +24,7 @@ export default class QuestionSetSelectionScene extends Phaser.Scene {
     this.subject = data.subject || 'math';
     this.returnScene = data.returnScene || 'WorldScene';
     this.villageConfig = data.villageConfig || null;
+    this.targetGameScene = data.targetGameScene || 'FruitCollectorScene';
   }
 
   async create() {
@@ -272,7 +273,8 @@ export default class QuestionSetSelectionScene extends Phaser.Scene {
       timeLimit: 60
     };
     
-    this.scene.start('FruitCollectorScene', sceneData);
+    // Use the target game scene passed from VillageScene
+    this.scene.start(this.targetGameScene, sceneData);
   }
 
   returnToVillage() {
