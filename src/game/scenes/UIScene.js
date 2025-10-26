@@ -48,6 +48,10 @@ export default class UIScene extends Phaser.Scene {
       worldScene.events.on('showInteractionPrompt', this.showInteractionPrompt, this);
       worldScene.events.on('hideInteractionPrompt', this.hideInteractionPrompt, this);
     }
+    
+    // Also listen to our own events so VillageScenes can communicate with us
+    this.events.on('showInteractionPrompt', this.showInteractionPrompt, this);
+    this.events.on('hideInteractionPrompt', this.hideInteractionPrompt, this);
 
     // Fade out instructions after a few seconds
     this.time.delayedCall(5000, () => {
@@ -157,7 +161,11 @@ export default class UIScene extends Phaser.Scene {
       targets: this.interactionPrompt.container,
       alpha: 0,
       duration: 300,
-      ease: 'Power2'
+      ease: 'Power2',
+      onComplete: () => {
+        // Clear the text after fade out completes
+        this.interactionPrompt.villageText.setText('');
+      }
     });
   }
 

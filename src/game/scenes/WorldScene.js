@@ -19,6 +19,14 @@ export default class WorldScene extends Phaser.Scene {
   }
 
   create() {
+    // Reset scene state in case of re-entry
+    this.pathPoints = [];
+    this.villages = [];
+    this.cats = [];
+    this.nearbyVillage = null;
+    // Ensure a fresh water group will be created; avoid calling methods on a possibly-destroyed group
+    this.waterGroup = null;
+
     // Set world bounds (larger than visible area)
     this.physics.world.setBounds(
       0,
@@ -55,7 +63,8 @@ export default class WorldScene extends Phaser.Scene {
     // Create some wandering cats
     this.spawnCats(6);
 
-    // Listen for village entrance events
+    // Listen for village entrance events (avoid duplicate handlers on re-entry)
+    this.events.off('villageEntered', this.handleVillageEntered, this);
     this.events.on('villageEntered', this.handleVillageEntered, this);
   }
 
@@ -131,10 +140,8 @@ export default class WorldScene extends Phaser.Scene {
   createWaterFeatures() {
     const tileSize = 16;
 
-    if (!this.waterGroup) {
-      this.waterGroup = this.physics.add.staticGroup();
-    }
-
+    // Always create a fresh static group to avoid stale scene references after returning from villages
+    this.waterGroup = this.physics.add.staticGroup();
     // Create a few small lakes (blobby clusters)
     const lakes = 4;
     for (let i = 0; i < lakes; i++) {

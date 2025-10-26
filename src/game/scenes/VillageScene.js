@@ -240,7 +240,7 @@ export default class VillageScene extends Phaser.Scene {
     if (!this.villageConfig) return;
 
     // Create title banner at top of screen
-    const title = this.add.text(
+    this.villageTitle = this.add.text(
       GAME_CONFIG.VILLAGE_SCENE.WIDTH / 2,
       30,
       `${this.villageConfig.emoji} ${this.villageConfig.name}`,
@@ -252,14 +252,14 @@ export default class VillageScene extends Phaser.Scene {
         padding: { x: 20, y: 10 }
       }
     );
-    title.setOrigin(0.5);
-    title.setScrollFactor(0);
-    title.setDepth(1000);
+    this.villageTitle.setOrigin(0.5);
+    this.villageTitle.setScrollFactor(0);
+    this.villageTitle.setDepth(1000);
 
     // Fade out after 3 seconds
     this.time.delayedCall(3000, () => {
       this.tweens.add({
-        targets: title,
+        targets: this.villageTitle,
         alpha: 0,
         duration: 1000
       });
@@ -334,6 +334,18 @@ export default class VillageScene extends Phaser.Scene {
 
   returnToLobby() {
     console.log('Returning to lobby...');
+    
+    // Hide the interaction prompt in UIScene before returning
+    const uiScene = this.scene.get('UIScene');
+    if (uiScene) {
+      uiScene.events.emit('hideInteractionPrompt');
+    }
+    
+    // Destroy village title if it exists
+    if (this.villageTitle) {
+      this.villageTitle.destroy();
+      this.villageTitle = null;
+    }
     
     // Transition back to WorldScene
     this.cameras.main.fade(500, 0, 0, 0);
