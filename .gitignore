@@ -31,3 +31,5 @@ functions/.env*
 functions/.env.*
 functions/.firebaserc
 functions/.runtimeconfig.json
+
+.firebase/hosting.YnVpbGQ.cache
