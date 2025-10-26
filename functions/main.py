@@ -7,13 +7,21 @@ from openai import OpenAI
 from typing import Literal
 import hashlib
 import io
-from datetime import datetime
+from datetime import datetime, timedelta
+
+# Gemini SDK (python)
+try:
+    # New official Python SDK
+    from google import genai
+except Exception:  # pragma: no cover
+    genai = None
 
 set_global_options(max_instances=10)
 initialize_app()
 
-# Configure OpenAI API key from environment
+# Configure secrets from environment
 OPENAI_API_KEY = StringParam("OPENAI_API_KEY")
+GOOGLE_API_KEY = StringParam("GOOGLE_API_KEY")
 
 # Pydantic models for structured output
 class QuestionOption(BaseModel):
@@ -233,4 +241,86 @@ def extract_questions_from_pdf(req: https_fn.CallableRequest):
         raise https_fn.HttpsError(
             code=https_fn.FunctionsErrorCode.INTERNAL,
             message=f"Error extracting questions: {str(e)}"
+        )
+
+
+@https_fn.on_call()
+def chat_with_assistant(req: https_fn.CallableRequest):
+    """
+    Simple text-based chat with Gemini AI assistant.
+
+    Request data:
+    {
+      "message": string,           // User's message
+      "village": string,           // Optional: village context (earning, saving, spending)
+      "history": list              // Optional: conversation history
+    }
+
+    Returns:
+    {
+      "response": string,          // AI response text
+      "success": boolean
+    }
+    """
+    try:
+        if genai is None:
+            raise https_fn.HttpsError(
+                code=https_fn.FunctionsErrorCode.FAILED_PRECONDITION,
+                message="google-genai SDK not installed"
+            )
+
+        api_key = GOOGLE_API_KEY.value
+        if not api_key:
+            raise https_fn.HttpsError(
+                code=https_fn.FunctionsErrorCode.FAILED_PRECONDITION,
+                message="GOOGLE_API_KEY is not configured"
+            )
+
+        # Get parameters
+        message = req.data.get("message", "")
+        village = req.data.get("village", "the village")
+        history = req.data.get("history", [])
+
+        if not message:
+            raise https_fn.HttpsError(
+                code=https_fn.FunctionsErrorCode.INVALID_ARGUMENT,
+                message="message is required"
+            )
+
+        # Create client
+        client = genai.Client(api_key=api_key)
+
+        # Build system instruction
+        system_instruction = f"""You are a friendly, helpful AI assistant named Mama Bear who lives in {village}.
+You help players learn about financial literacy in a fun, encouraging way.
+Keep your responses brief (1-2 sentences), friendly, and age-appropriate for kids.
+Use simple language and be positive and supportive.
+If asked about the game, mention that players can explore villages and play mini-games to learn about earning, saving, and spending money."""
+
+        # Generate response
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-exp",
+            contents=message,
+            config={
+                "temperature": 0.7,
+                "system_instruction": system_instruction
+            }
+        )
+
+        response_text = response.text if hasattr(response, 'text') else str(response)
+
+        return {
+            "success": True,
+            "response": response_text
+        }
+
+    except https_fn.HttpsError:
+        raise
+    except Exception as e:
+        print(f"Error in chat: {e}")
+        import traceback
+        traceback.print_exc()
+        raise https_fn.HttpsError(
+            code=https_fn.FunctionsErrorCode.INTERNAL,
+            message=f"Chat error: {str(e)}"
         )

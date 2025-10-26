@@ -4,6 +4,8 @@
 
 This Firebase function extracts multiple choice questions from PDF files using OpenAI's GPT-4o-mini with structured outputs. The questions are automatically stored in Firestore and organized into question sets.
 
+Additionally, a callable function is provided to mint short-lived Gemini Live API ephemeral tokens for secure client-to-server WebSocket sessions.
+
 ## Function: `extract_questions_from_pdf`
 
 ### Description
@@ -31,6 +33,35 @@ Extracts up to 10 multiple choice questions from a PDF file stored in Firebase S
 ```
 
 ### Setup
+
+1. Install dependencies
+
+```bash
+cd functions
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+2. Configure API keys as secrets
+
+- OpenAI (for PDF extraction)
+
+```bash
+firebase functions:secrets:set OPENAI_API_KEY
+```
+
+- Google Gemini (for Live API ephemeral tokens)
+
+```bash
+firebase functions:secrets:set GOOGLE_API_KEY
+```
+
+3. Deploy the functions
+
+```bash
+firebase deploy --only functions
+```
 
 1. **Set up Python Virtual Environment**
    
@@ -63,6 +94,28 @@ Extracts up to 10 multiple choice questions from a PDF file stored in Firebase S
    ```
 
 ### Usage Example
+
+#### Mint Gemini Live API Ephemeral Token (Client)
+
+```ts
+import { getFunctions, httpsCallable } from 'firebase/functions';
+
+const functions = getFunctions();
+const createToken = httpsCallable(functions, 'create_gemini_ephemeral_token');
+
+// Request a token (defaults lock model + AUDIO modality)
+const { data } = await createToken({
+  model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+  temperature: 0.7,
+  modalities: ['AUDIO'],
+  uses: 1,
+  expire_minutes: 30,
+  new_session_expire_seconds: 60,
+  lock_config: true,
+});
+
+// data.token can be used as the apiKey with @google/genai on the client for ai.live.connect
+```
 
 #### From Client SDK (JavaScript/TypeScript)
 
