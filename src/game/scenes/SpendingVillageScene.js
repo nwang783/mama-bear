@@ -3,11 +3,11 @@ import House from '../entities/House';
 import { GAME_CONFIG } from '../config/gameConfig';
 
 /**
- * Finance Village Scene - contains finance-related minigame houses
+ * Spending Village Scene - contains spending-related minigame houses
  */
-export default class FinanceVillageScene extends VillageScene {
+export default class SpendingVillageScene extends VillageScene {
   constructor() {
-    super('FinanceVillageScene');
+    super('SpendingVillageScene');
   }
 
   create() {
@@ -19,11 +19,11 @@ export default class FinanceVillageScene extends VillageScene {
   }
 
   createHouses() {
-    // Get finance village house configurations
-    this.housesConfig = GAME_CONFIG.HOUSES.FINANCE_VILLAGE;
+    // Get spending village house configurations
+    this.housesConfig = GAME_CONFIG.HOUSES.SPENDING_VILLAGE;
     
     // Get village color
-    const villageColor = GAME_CONFIG.VILLAGES.find(v => v.id === 'finance').color;
+    const villageColor = GAME_CONFIG.VILLAGES.find(v => v.id === 'spending').color;
 
     // Create each house
     this.housesConfig.forEach(houseConfig => {

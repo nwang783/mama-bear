@@ -235,20 +235,20 @@ export default class WorldScene extends Phaser.Scene {
     const villages = GAME_CONFIG.VILLAGES;
     const tileSize = 16;
     
-    // reading = villages[0], math = villages[1], finance = villages[2]
-    const readingX = villages[0].x;
-    const readingY = villages[0].y;
-    const mathX = villages[1].x;
-    const mathY = villages[1].y;
-    const financeY = villages[2].y;
+    // saving = villages[0], earning = villages[1], spending = villages[2]
+    const savingX = villages[0].x;
+    const savingY = villages[0].y;
+    const earningX = villages[1].x;
+    const earningY = villages[1].y;
+    const spendingY = villages[2].y;
 
-    // Horizontal path connecting reading and math villages
-    const horizY = (readingY + mathY) / 2;
-    this.createHorizontalPath(readingX, mathX, horizY, tileSize);
+    // Horizontal path connecting saving and earning villages
+    const horizY = (savingY + earningY) / 2;
+    this.createHorizontalPath(savingX, earningX, horizY, tileSize);
 
-    // Vertical path from finance village up to the horizontal path
-    const midX = (readingX + mathX) / 2;
-    this.createVerticalPath(midX, financeY, horizY, tileSize);
+    // Vertical path from spending village up to the horizontal path
+    const midX = (savingX + earningX) / 2;
+    this.createVerticalPath(midX, spendingY, horizY, tileSize);
   }
 
   createHorizontalPath(x1, x2, y, tileSize) {
@@ -362,9 +362,9 @@ export default class WorldScene extends Phaser.Scene {
     
     // Determine which village scene to load based on village ID
     const sceneMap = {
-      'math': 'MathVillageScene',
-      'reading': 'ReadingVillageScene',
-      'finance': 'FinanceVillageScene'
+      'earning': 'EarningVillageScene',
+      'saving': 'SavingVillageScene',
+      'spending': 'SpendingVillageScene'
     };
 
     const sceneKey = sceneMap[villageConfig.id];

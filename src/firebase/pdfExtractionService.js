@@ -8,7 +8,7 @@ import { db } from './config';
  * Upload PDF to Firebase Storage
  * 
  * @param {File} file - PDF file to upload
- * @param {string} village - Village to assign (reading, math, or finance)
+ * @param {string} village - Village to assign (earning, saving, or spending)
  * @returns {Promise<string>} - Storage path of uploaded file
  */
 export async function uploadPDF(file, village) {
@@ -19,8 +19,8 @@ export async function uploadPDF(file, village) {
     }
 
     // Validate village
-    if (!['reading', 'math', 'finance'].includes(village)) {
-      throw new Error('Village must be reading, math, or finance');
+    if (!['earning', 'saving', 'spending'].includes(village)) {
+      throw new Error('Village must be earning, saving, or spending');
     }
 
     // Create a unique filename with timestamp

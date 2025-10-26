@@ -14,14 +14,14 @@ export default class QuestionSetSelectionScene extends Phaser.Scene {
     
     this.questionSets = [];
     this.selectedSet = null;
-    this.subject = 'math';
-    this.returnScene = 'MathVillageScene';
+    this.subject = 'earning';
+    this.returnScene = 'EarningVillageScene';
     this.villageConfig = null;
     this.setButtons = [];
   }
 
   init(data) {
-    this.subject = data.subject || 'math';
+    this.subject = data.subject || 'earning';
     this.returnScene = data.returnScene || 'WorldScene';
     this.villageConfig = data.villageConfig || null;
     this.targetGameScene = data.targetGameScene || 'FruitCollectorScene';

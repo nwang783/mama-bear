@@ -15,9 +15,9 @@ import { db } from './config';
 
 // Cache for questions to reduce Firebase reads
 const questionCache = {
-  math: { data: null, timestamp: null },
-  reading: { data: null, timestamp: null },
-  finance: { data: null, timestamp: null }
+  earning: { data: null, timestamp: null },
+  saving: { data: null, timestamp: null },
+  spending: { data: null, timestamp: null }
 };
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -26,7 +26,7 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
  * Get top questions by subject from Firebase
  * Uses caching to reduce Firebase reads
  * 
- * @param {string} subject - Subject type: 'math', 'reading', or 'finance'
+ * @param {string} subject - Subject type: 'earning', 'saving', or 'spending'
  * @param {number} limitCount - Number of questions to fetch (default 10)
  * @returns {Promise<Array>} Array of question objects
  */

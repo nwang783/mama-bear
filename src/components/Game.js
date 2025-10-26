@@ -3,9 +3,9 @@ import Phaser from 'phaser';
 import BootScene from '../game/scenes/BootScene';
 import WorldScene from '../game/scenes/WorldScene';
 import UIScene from '../game/scenes/UIScene';
-import MathVillageScene from '../game/scenes/MathVillageScene';
-import ReadingVillageScene from '../game/scenes/ReadingVillageScene';
-import FinanceVillageScene from '../game/scenes/FinanceVillageScene';
+import EarningVillageScene from '../game/scenes/EarningVillageScene';
+import SavingVillageScene from '../game/scenes/SavingVillageScene';
+import SpendingVillageScene from '../game/scenes/SpendingVillageScene';
 import QuestionSetSelectionScene from '../game/scenes/QuestionSetSelectionScene';
 import FruitCollectorScene from '../game/scenes/FruitCollectorScene';
 import FishingScene from '../game/scenes/FishingScene';
@@ -28,9 +28,9 @@ function Game() {
           BootScene,
           WorldScene,
           UIScene,
-          MathVillageScene,
-          ReadingVillageScene,
-          FinanceVillageScene,
+          EarningVillageScene,
+          SavingVillageScene,
+          SpendingVillageScene,
           QuestionSetSelectionScene,
           FruitCollectorScene,
           FishingScene

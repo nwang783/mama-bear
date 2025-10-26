@@ -12,9 +12,9 @@
 import { getTopQuestionsBySubject } from '../../firebase/questionsService';
 
 /**
- * Generate math questions
+ * Generate earning questions
  */
-export function getMathQuestions(count = 10) {
+export function getEarningQuestions(count = 10) {
   const questions = [];
   const operations = [
     { symbol: '+', name: 'addition', minNum: 1, maxNum: 20 },
@@ -73,9 +73,9 @@ export function getMathQuestions(count = 10) {
 }
 
 /**
- * Generate reading questions
+ * Generate saving questions
  */
-export function getReadingQuestions(count = 10) {
+export function getSavingQuestions(count = 10) {
   const questionBank = [
     {
       question: 'What is a synonym for "happy"?',
@@ -145,9 +145,9 @@ export function getReadingQuestions(count = 10) {
 }
 
 /**
- * Generate finance questions
+ * Generate spending questions
  */
-export function getFinanceQuestions(count = 10) {
+export function getSpendingQuestions(count = 10) {
   const questionBank = [
     {
       question: 'If you have $5 and earn $3 more, how much do you have?',
@@ -249,14 +249,14 @@ export async function getQuestionsFromFirebase(subject, count = 10) {
  */
 export function getLocalQuestionsBySubject(subject, count = 10) {
   switch (subject.toLowerCase()) {
-    case 'math':
-      return getMathQuestions(count);
-    case 'reading':
-      return getReadingQuestions(count);
-    case 'finance':
-      return getFinanceQuestions(count);
+    case 'earning':
+      return getEarningQuestions(count);
+    case 'saving':
+      return getSavingQuestions(count);
+    case 'spending':
+      return getSpendingQuestions(count);
     default:
-      return getMathQuestions(count);
+      return getEarningQuestions(count);
   }
 }
 

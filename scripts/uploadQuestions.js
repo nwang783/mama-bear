@@ -32,428 +32,428 @@ const db = getFirestore(app);
 
 // Define Question Sets
 const questionSets = {
-  math: [
+  earning: [
     {
-      name: 'Addition Basics',
-      description: 'Practice simple addition problems',
+      name: 'Allowance Basics',
+      description: 'Learn about earning an allowance',
       difficulty: 'easy',
       upvotes: 25,
       questions: [
         {
-          question: 'What is 7 + 8?',
-          choices: ['13', '15', '16', '14'],
+          question: 'If you earn $2 allowance each week, how much after 2 weeks?',
+          choices: ['$2', '$4', '$6', '$8'],
           correctIndex: 1
         },
         {
-          question: 'What is 9 + 9?',
-          choices: ['17', '18', '19', '20'],
+          question: 'You get $5 for doing chores. How much for doing chores twice?',
+          choices: ['$5', '$10', '$15', '$20'],
           correctIndex: 1
         },
         {
-          question: 'What is 5 + 6?',
-          choices: ['10', '11', '12', '13'],
+          question: 'Mom gives you $3 on Monday and $3 on Friday. Total earned?',
+          choices: ['$3', '$6', '$9', '$12'],
           correctIndex: 1
         },
         {
-          question: 'What is 25 + 17?',
-          choices: ['41', '42', '43', '44'],
-          correctIndex: 1
+          question: 'You earn $1 per day for a week (7 days). How much total?',
+          choices: ['$5', '$6', '$7', '$8'],
+          correctIndex: 2
         }
       ]
     },
     {
-      name: 'Subtraction Practice',
-      description: 'Learn subtraction with ease',
+      name: 'Chores & Money',
+      description: 'Earn money by helping at home',
       difficulty: 'easy',
       upvotes: 20,
       questions: [
         {
-          question: 'What is 12 - 5?',
-          choices: ['7', '8', '6', '9'],
+          question: 'Which chore might help you earn money at home?',
+          choices: ['Watching TV', 'Washing dishes', 'Playing games', 'Sleeping'],
+          correctIndex: 1
+        },
+        {
+          question: 'You earn $2 for cleaning your room. Fair payment?',
+          choices: ['Yes', 'No', 'Maybe', 'Too much'],
           correctIndex: 0
         },
         {
-          question: 'What is 20 - 8?',
-          choices: ['11', '12', '13', '14'],
+          question: 'Dad pays $5 to mow the lawn. How many times to earn $15?',
+          choices: ['2 times', '3 times', '4 times', '5 times'],
           correctIndex: 1
         },
         {
-          question: 'What is 30 - 15?',
-          choices: ['10', '15', '20', '25'],
-          correctIndex: 1
-        },
-        {
-          question: 'What is 100 - 45?',
-          choices: ['50', '55', '60', '65'],
+          question: 'Walking the dog pays $1. Washing car pays $3. Which earns more?',
+          choices: ['Dog walking', 'Washing car', 'Same', 'Neither'],
           correctIndex: 1
         }
       ]
     },
     {
-      name: 'Multiplication Master',
-      description: 'Times tables made fun',
+      name: 'Jobs for Kids',
+      description: 'Ways kids can earn money',
       difficulty: 'medium',
       upvotes: 30,
       questions: [
         {
-          question: 'What is 6 × 7?',
-          choices: ['42', '48', '36', '54'],
+          question: 'Which is a good way for kids to earn money?',
+          choices: ['Lemonade stand', 'Asking for gifts', 'Taking money', 'Watching TV'],
           correctIndex: 0
         },
         {
-          question: 'What is 4 × 9?',
-          choices: ['32', '36', '40', '45'],
+          question: 'You sell 4 cookies for $1 each. How much do you earn?',
+          choices: ['$2', '$3', '$4', '$5'],
+          correctIndex: 2
+        },
+        {
+          question: 'What does "earning money" mean?',
+          choices: ['Finding it', 'Getting it for work', 'Stealing it', 'Borrowing it'],
           correctIndex: 1
         },
         {
-          question: 'What is 8 × 8?',
-          choices: ['64', '56', '72', '48'],
-          correctIndex: 0
-        },
-        {
-          question: 'What is 5 × 6?',
-          choices: ['25', '30', '35', '40'],
-          correctIndex: 1
+          question: 'You babysit for $8/hour for 2 hours. Total earned?',
+          choices: ['$8', '$10', '$14', '$16'],
+          correctIndex: 3
         }
       ]
     },
     {
-      name: 'Division Challenge',
-      description: 'Practice division skills',
+      name: 'Entrepreneurship',
+      description: 'Start your own small business',
       difficulty: 'medium',
       upvotes: 15,
       questions: [
         {
-          question: 'What is 15 ÷ 3?',
-          choices: ['3', '5', '6', '4'],
+          question: 'You sell lemonade for $0.50 per cup. 10 cups earns how much?',
+          choices: ['$3', '$4', '$5', '$6'],
+          correctIndex: 2
+        },
+        {
+          question: 'What is a "business"?',
+          choices: ['A school', 'Selling goods/services', 'A toy', 'A game'],
           correctIndex: 1
         },
         {
-          question: 'What is 24 ÷ 6?',
-          choices: ['4', '5', '6', '3'],
-          correctIndex: 0
-        },
-        {
-          question: 'What is 36 ÷ 9?',
-          choices: ['3', '4', '5', '6'],
+          question: 'You make bracelets and sell each for $2. Sell 6, earn?',
+          choices: ['$10', '$12', '$14', '$16'],
           correctIndex: 1
         },
         {
-          question: 'What is 48 ÷ 8?',
-          choices: ['5', '6', '7', '8'],
+          question: 'Why might someone pay you to do a job?',
+          choices: ['They are kind', 'You provide value', 'They have to', 'It is fun'],
           correctIndex: 1
         }
       ]
     },
     {
-      name: 'Mixed Operations',
-      description: 'All operations combined',
+      name: 'Work & Rewards',
+      description: 'Understanding work and payment',
       difficulty: 'hard',
       upvotes: 18,
       questions: [
         {
-          question: 'What is 7 + 8?',
-          choices: ['13', '15', '16', '14'],
+          question: 'You work 3 hours at $4/hour. Total earned?',
+          choices: ['$7', '$12', '$15', '$20'],
           correctIndex: 1
         },
         {
-          question: 'What is 20 - 8?',
-          choices: ['11', '12', '13', '14'],
+          question: 'Fair pay means getting paid based on what?',
+          choices: ['Your age', 'Your work', 'Your height', 'Your wishes'],
           correctIndex: 1
         },
         {
-          question: 'What is 6 × 7?',
-          choices: ['42', '48', '36', '54'],
-          correctIndex: 0
+          question: 'You earn $20 and split it equally with a friend. Each gets?',
+          choices: ['$5', '$10', '$15', '$20'],
+          correctIndex: 1
         },
         {
-          question: 'What is 15 ÷ 3?',
-          choices: ['3', '5', '6', '4'],
+          question: 'Which job likely pays more per hour?',
+          choices: ['Walking dogs', 'Being a doctor', 'Playing', 'Eating lunch'],
           correctIndex: 1
         }
       ]
     }
   ],
-  reading: [
+  saving: [
     {
-      name: 'Synonyms & Antonyms',
-      description: 'Master word meanings',
+      name: 'Piggy Bank Basics',
+      description: 'Learn to save your money',
       difficulty: 'easy',
       upvotes: 28,
       questions: [
         {
-          question: 'What is a synonym for "happy"?',
-          choices: ['Sad', 'Joyful', 'Angry', 'Tired'],
+          question: 'What does it mean to "save money"?',
+          choices: ['Spend it all', 'Keep it for later', 'Lose it', 'Give it away'],
           correctIndex: 1
         },
         {
-          question: 'What is the opposite of "big"?',
-          choices: ['Large', 'Small', 'Huge', 'Tall'],
+          question: 'You have $10 and save $5. How much did you save?',
+          choices: ['$5', '$10', '$15', '$20'],
+          correctIndex: 0
+        },
+        {
+          question: 'Where is a safe place to save money?',
+          choices: ['On the ground', 'In a bank', 'Give to strangers', 'Throw away'],
           correctIndex: 1
         },
         {
-          question: 'What is a synonym for "big"?',
-          choices: ['Tiny', 'Large', 'Small', 'Short'],
-          correctIndex: 1
-        },
-        {
-          question: 'Which word means the same as "start"?',
-          choices: ['End', 'Begin', 'Stop', 'Finish'],
-          correctIndex: 1
+          question: 'You save $2 each week for 3 weeks. Total saved?',
+          choices: ['$2', '$4', '$6', '$8'],
+          correctIndex: 2
         }
       ]
     },
     {
-      name: 'Rhyming Words',
-      description: 'Find words that rhyme',
+      name: 'Saving Goals',
+      description: 'Save money for things you want',
       difficulty: 'easy',
       upvotes: 22,
       questions: [
         {
-          question: 'Which word rhymes with "cat"?',
-          choices: ['Dog', 'Hat', 'Run', 'Jump'],
+          question: 'You want a $10 toy. You have $4. How much more to save?',
+          choices: ['$4', '$6', '$10', '$14'],
           correctIndex: 1
         },
         {
-          question: 'What rhymes with "tree"?',
-          choices: ['Free', 'Car', 'Dog', 'Hat'],
-          correctIndex: 0
+          question: 'What is a "savings goal"?',
+          choices: ['Spending everything', 'Saving for something', 'Losing money', 'A game'],
+          correctIndex: 1
         },
         {
-          question: 'What rhymes with "book"?',
-          choices: ['Cook', 'Ball', 'Sun', 'Fish'],
-          correctIndex: 0
+          question: 'You save $1 per day. In 5 days, how much saved?',
+          choices: ['$1', '$3', '$5', '$7'],
+          correctIndex: 2
         },
         {
-          question: 'What rhymes with "play"?',
-          choices: ['Day', 'Night', 'Go', 'Stop'],
+          question: 'Which is a good reason to save money?',
+          choices: ['To buy something later', 'To forget about it', 'To lose it', 'No reason'],
           correctIndex: 0
         }
       ]
     },
     {
-      name: 'Parts of Speech',
-      description: 'Identify nouns, verbs, and more',
+      name: 'Growing Your Savings',
+      description: 'Watch your money grow',
       difficulty: 'medium',
       upvotes: 20,
       questions: [
         {
-          question: 'Which word is a noun?',
-          choices: ['Run', 'Happy', 'Book', 'Quickly'],
+          question: 'You have $20 saved. You add $5 more. New total?',
+          choices: ['$15', '$20', '$25', '$30'],
           correctIndex: 2
         },
         {
-          question: 'Which is a verb?',
-          choices: ['Table', 'Red', 'Jump', 'Book'],
-          correctIndex: 2
+          question: 'What is "interest" on savings?',
+          choices: ['Losing money', 'Extra money earned', 'Spending money', 'Finding money'],
+          correctIndex: 1
         },
         {
-          question: 'Which is an adjective?',
-          choices: ['Happy', 'Run', 'Book', 'Today'],
-          correctIndex: 0
+          question: 'If you save $3 per week for 4 weeks, total saved?',
+          choices: ['$9', '$12', '$15', '$18'],
+          correctIndex: 1
         },
         {
-          question: 'Which is an adverb?',
-          choices: ['Book', 'Red', 'Jump', 'Quickly'],
-          correctIndex: 3
+          question: 'Why is it good to save regularly?',
+          choices: ['It is boring', 'Money grows over time', 'It is hard', 'No reason'],
+          correctIndex: 1
         }
       ]
     },
     {
-      name: 'Alphabet & Letters',
-      description: 'Letter recognition and basics',
+      name: 'Emergency Savings',
+      description: 'Save for unexpected needs',
       difficulty: 'easy',
       upvotes: 25,
       questions: [
         {
-          question: 'What letter does "apple" start with?',
-          choices: ['B', 'A', 'C', 'D'],
+          question: 'What is an "emergency fund"?',
+          choices: ['Fun money', 'Money for surprises', 'Lunch money', 'Toy money'],
           correctIndex: 1
         },
         {
-          question: 'Which letter comes after M?',
-          choices: ['L', 'N', 'O', 'P'],
+          question: 'You save $10 for emergencies. Your bike breaks. Good to use it?',
+          choices: ['Yes', 'No', 'Maybe', 'Never'],
+          correctIndex: 0
+        },
+        {
+          question: 'How much of your money should you try to save?',
+          choices: ['None', 'All of it', 'Some of it', 'Depends'],
+          correctIndex: 2
+        },
+        {
+          question: 'Which is an emergency?',
+          choices: ['Want new toy', 'Lost wallet', 'Bored', 'Hungry for candy'],
           correctIndex: 1
-        },
-        {
-          question: 'What letter does "zebra" start with?',
-          choices: ['X', 'Y', 'Z', 'W'],
-          correctIndex: 2
-        },
-        {
-          question: 'How many letters in the alphabet?',
-          choices: ['24', '25', '26', '27'],
-          correctIndex: 2
         }
       ]
     },
     {
-      name: 'Word Structure',
-      description: 'Syllables and word forms',
+      name: 'Saving Strategies',
+      description: 'Smart ways to save money',
       difficulty: 'medium',
       upvotes: 16,
       questions: [
         {
-          question: 'How many syllables in "butterfly"?',
-          choices: ['1', '2', '3', '4'],
-          correctIndex: 2
-        },
-        {
-          question: 'What is the plural of "child"?',
-          choices: ['Childs', 'Children', 'Childes', 'Childer'],
+          question: 'Which helps you save more money?',
+          choices: ['Buy everything', 'Save first, spend later', 'Spend all', 'Forget about it'],
           correctIndex: 1
         },
         {
-          question: 'Which word has 2 syllables?',
-          choices: ['Cat', 'Rainbow', 'Dog', 'Sun'],
+          question: 'You get $10. Save 50%. How much saved?',
+          choices: ['$2', '$5', '$7', '$10'],
           correctIndex: 1
         },
         {
-          question: 'What is the past tense of "run"?',
-          choices: ['Runned', 'Ran', 'Running', 'Runs'],
+          question: 'Why use a piggy bank or bank account?',
+          choices: ['To lose money', 'Keep money safe', 'Make it disappear', 'To hide it'],
+          correctIndex: 1
+        },
+        {
+          question: 'Which shows good saving habits?',
+          choices: ['Spend immediately', 'Save regularly', 'Never save', 'Forget about money'],
           correctIndex: 1
         }
       ]
     }
   ],
-  finance: [
+  spending: [
     {
-      name: 'Coin Values',
-      description: 'Learn about pennies, nickels, and more',
+      name: 'Needs vs Wants',
+      description: 'Learn the difference',
       difficulty: 'easy',
       upvotes: 26,
       questions: [
         {
-          question: 'Which coin is worth 25 cents?',
-          choices: ['Penny', 'Nickel', 'Dime', 'Quarter'],
-          correctIndex: 3
-        },
-        {
-          question: 'A dime is worth how many cents?',
-          choices: ['1', '5', '10', '25'],
-          correctIndex: 2
-        },
-        {
-          question: 'A nickel is worth how many pennies?',
-          choices: ['1', '5', '10', '25'],
+          question: 'Which is a "need"?',
+          choices: ['Candy', 'Food', 'Toys', 'Video games'],
           correctIndex: 1
         },
         {
-          question: 'How many pennies make a dollar?',
-          choices: ['10', '25', '50', '100'],
-          correctIndex: 3
+          question: 'Which is a "want"?',
+          choices: ['Water', 'Shelter', 'New bike', 'Clothes'],
+          correctIndex: 2
+        },
+        {
+          question: 'Should you buy needs or wants first?',
+          choices: ['Wants', 'Needs', 'Both same', 'Neither'],
+          correctIndex: 1
+        },
+        {
+          question: 'You have $5. Need lunch ($3), want toy ($4). What to buy?',
+          choices: ['Toy', 'Lunch', 'Both', 'Neither'],
+          correctIndex: 1
+        }
+      ]
+    },
+    {
+      name: 'Price Comparison',
+      description: 'Find the best deals',
+      difficulty: 'medium',
+      upvotes: 22,
+      questions: [
+        {
+          question: 'Same toy: Store A $10, Store B $8. Which is better?',
+          choices: ['Store A', 'Store B', 'Same', 'Cannot tell'],
+          correctIndex: 1
+        },
+        {
+          question: 'You want 4 apples. $1 each or $3 for 4. Better deal?',
+          choices: ['$1 each', '$3 for 4', 'Same', 'Cannot tell'],
+          correctIndex: 1
+        },
+        {
+          question: 'Why compare prices before buying?',
+          choices: ['To waste time', 'To save money', 'It is fun', 'No reason'],
+          correctIndex: 1
+        },
+        {
+          question: 'Shirt costs $15 on sale, was $20. How much saved?',
+          choices: ['$3', '$5', '$10', '$15'],
+          correctIndex: 1
+        }
+      ]
+    },
+    {
+      name: 'Smart Shopping',
+      description: 'Make wise purchases',
+      difficulty: 'easy',
+      upvotes: 24,
+      questions: [
+        {
+          question: 'You have $10. Toy costs $12. Can you buy it?',
+          choices: ['Yes', 'No', 'Maybe', 'Not sure'],
+          correctIndex: 1
+        },
+        {
+          question: 'What should you check before buying something?',
+          choices: ['The color', 'If you have enough money', 'The size', 'The brand'],
+          correctIndex: 1
+        },
+        {
+          question: 'You see a toy you want. What should you do first?',
+          choices: ['Buy it now', 'Check the price', 'Ask for it', 'Take it'],
+          correctIndex: 1
+        },
+        {
+          question: 'Why make a shopping list?',
+          choices: ['To forget things', 'To buy what you need', 'To waste paper', 'No reason'],
+          correctIndex: 1
+        }
+      ]
+    },
+    {
+      name: 'Budgeting for Spending',
+      description: 'Plan your purchases',
+      difficulty: 'medium',
+      upvotes: 19,
+      questions: [
+        {
+          question: 'You have $20 to spend this week. Spend $15 Monday. How much left?',
+          choices: ['$3', '$5', '$10', '$15'],
+          correctIndex: 1
+        },
+        {
+          question: 'What is a "budget"?',
+          choices: ['Money you find', 'A spending plan', 'Free money', 'A game'],
+          correctIndex: 1
+        },
+        {
+          question: 'You budget $10 for fun. Good to spend $12?',
+          choices: ['Yes', 'No', 'Maybe', 'Always'],
+          correctIndex: 1
+        },
+        {
+          question: 'Why is budgeting important?',
+          choices: ['It is boring', 'Helps not overspend', 'Takes too long', 'No reason'],
+          correctIndex: 1
         }
       ]
     },
     {
       name: 'Making Change',
-      description: 'Practice calculating change',
-      difficulty: 'medium',
-      upvotes: 22,
-      questions: [
-        {
-          question: 'A toy costs $10. You have $15. How much change?',
-          choices: ['$5', '$10', '$15', '$25'],
-          correctIndex: 0
-        },
-        {
-          question: 'You buy candy for $3. You pay with $5. Change?',
-          choices: ['$1', '$2', '$3', '$4'],
-          correctIndex: 1
-        },
-        {
-          question: 'Item costs $7. You pay $10. Change?',
-          choices: ['$2', '$3', '$4', '$5'],
-          correctIndex: 1
-        },
-        {
-          question: 'Book costs $12. You pay $20. Change?',
-          choices: ['$6', '$7', '$8', '$9'],
-          correctIndex: 2
-        }
-      ]
-    },
-    {
-      name: 'Money Math',
-      description: 'Addition and subtraction with money',
-      difficulty: 'easy',
-      upvotes: 24,
-      questions: [
-        {
-          question: 'If you have $5 and earn $3 more, how much do you have?',
-          choices: ['$2', '$5', '$8', '$10'],
-          correctIndex: 2
-        },
-        {
-          question: 'You earn $20 and spend $12. How much left?',
-          choices: ['$8', '$10', '$12', '$32'],
-          correctIndex: 0
-        },
-        {
-          question: 'Which costs more: $5 or $3?',
-          choices: ['$3', '$5', 'Same', 'Cannot tell'],
-          correctIndex: 1
-        },
-        {
-          question: 'If candy costs $2 each, how much for 3?',
-          choices: ['$3', '$5', '$6', '$8'],
-          correctIndex: 2
-        }
-      ]
-    },
-    {
-      name: 'Budgeting Basics',
-      description: 'Learn to plan spending',
-      difficulty: 'medium',
-      upvotes: 19,
-      questions: [
-        {
-          question: 'What does "save money" mean?',
-          choices: ['Spend it all', 'Keep it for later', 'Lose it', 'Give it away'],
-          correctIndex: 1
-        },
-        {
-          question: 'What is a "budget"?',
-          choices: ['Money you find', 'Plan for spending', 'Free money', 'A game'],
-          correctIndex: 1
-        },
-        {
-          question: 'If you save $2 per week for 4 weeks, how much total?',
-          choices: ['$4', '$6', '$8', '$10'],
-          correctIndex: 2
-        },
-        {
-          question: 'You have $20. Save $5. How much to spend?',
-          choices: ['$10', '$15', '$20', '$25'],
-          correctIndex: 1
-        }
-      ]
-    },
-    {
-      name: 'Shopping Smart',
-      description: 'Make good buying decisions',
+      description: 'Practice with money',
       difficulty: 'medium',
       upvotes: 17,
       questions: [
         {
-          question: 'Which costs more: $5 or $3?',
-          choices: ['$3', '$5', 'Same', 'Cannot tell'],
+          question: 'Item costs $7. You pay $10. How much change?',
+          choices: ['$2', '$3', '$4', '$5'],
           correctIndex: 1
         },
         {
-          question: 'You have $10. Can you buy a $12 toy?',
-          choices: ['Yes', 'No', 'Maybe', 'Not sure'],
-          correctIndex: 1
-        },
-        {
-          question: 'Best deal: $5 for 2 or $3 for 1?',
-          choices: ['$5 for 2', '$3 for 1', 'Same', 'Cannot tell'],
-          correctIndex: 0
-        },
-        {
-          question: 'You want a $15 game. You have $12. How much more?',
+          question: 'You buy candy for $3. Pay with $5. Change?',
           choices: ['$1', '$2', '$3', '$4'],
+          correctIndex: 1
+        },
+        {
+          question: 'Book costs $12. Pay with $20. Change?',
+          choices: ['$6', '$7', '$8', '$9'],
           correctIndex: 2
+        },
+        {
+          question: 'Why is it important to count your change?',
+          choices: ['To waste time', 'To check it is correct', 'It is fun', 'No reason'],
+          correctIndex: 1
         }
       ]
     }
@@ -468,7 +468,7 @@ async function uploadQuestionSets() {
   let errorCount = 0;
 
   // Process each subject
-  for (const subject of ['math', 'reading', 'finance']) {
+  for (const subject of ['earning', 'saving', 'spending']) {
     console.log(`\n=== Processing ${subject.toUpperCase()} ===`);
     
     const sets = questionSets[subject];
@@ -527,9 +527,9 @@ async function uploadQuestionSets() {
   console.log(`✓ Successfully created: ${totalQuestionsCreated} questions`);
   console.log(`✗ Errors: ${errorCount}`);
   console.log(`\nBreakdown by subject:`);
-  console.log(`  Math: ${questionSets.math.length} sets`);
-  console.log(`  Reading: ${questionSets.reading.length} sets`);
-  console.log(`  Finance: ${questionSets.finance.length} sets`);
+  console.log(`  Earning: ${questionSets.earning.length} sets`);
+  console.log(`  Saving: ${questionSets.saving.length} sets`);
+  console.log(`  Spending: ${questionSets.spending.length} sets`);
   console.log(`  Total: ${totalSetsCreated} sets with ${totalQuestionsCreated} questions`);
 
   process.exit(errorCount > 0 ? 1 : 0);

@@ -30,7 +30,7 @@ class MultipleChoiceQuestion(BaseModel):
 
 class QuestionSet(BaseModel):
     questions: list[MultipleChoiceQuestion] = Field(max_length=10, description="Up to 10 multiple choice questions extracted from the PDF")
-    village: Literal["reading", "math", "finance"] = Field(description="The village/domain this question set belongs to")
+    village: Literal["earning", "saving", "spending"] = Field(description="The village/domain this question set belongs to")
 
 
 @https_fn.on_call()
@@ -41,7 +41,7 @@ def extract_questions_from_pdf(req: https_fn.CallableRequest):
     Expected request data:
     {
         "storage_path": "path/to/file.pdf",  # Path to PDF in Firebase Storage
-        "village": "reading" | "math" | "finance"  # Which village to assign questions to
+        "village": "earning" | "saving" | "spending"  # Which village to assign questions to
     }
     """
     try:
@@ -59,10 +59,10 @@ def extract_questions_from_pdf(req: https_fn.CallableRequest):
                 message="storage_path is required"
             )
         
-        if village not in ["reading", "math", "finance"]:
+        if village not in ["earning", "saving", "spending"]:
             raise https_fn.HttpsError(
                 code=https_fn.FunctionsErrorCode.INVALID_ARGUMENT,
-                message="village must be 'reading', 'math', or 'finance'"
+                message="village must be 'earning', 'saving', or 'spending'"
             )
         
         # Download PDF from Firebase Storage

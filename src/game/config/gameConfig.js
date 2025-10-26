@@ -25,31 +25,31 @@ export const GAME_CONFIG = {
   // Village configurations
   VILLAGES: [
     {
-      id: 'reading',
-      name: 'Reading Village',
+      id: 'saving',
+      name: 'Saving Village',
       x: 600,
       y: 500,
       color: 0x4ecdc4,
-      emoji: '📚',
-      description: 'Learn reading and literacy'
+      emoji: '🏦',
+      description: 'Learn to save and grow your money'
     },
     {
-      id: 'math',
-      name: 'Math Village',
+      id: 'earning',
+      name: 'Earning Village',
       x: 1800,
       y: 600,
       color: 0xffe66d,
-      emoji: '🔢',
-      description: 'Practice math and numbers'
+      emoji: '💼',
+      description: 'Discover ways to earn money'
     },
     {
-      id: 'finance',
-      name: 'Finance Village',
+      id: 'spending',
+      name: 'Spending Village',
       x: 1200,
       y: 1400,
       color: 0xff6b6b,
-      emoji: '💰',
-      description: 'Understand money and finance'
+      emoji: '🛒',
+      description: 'Make smart spending choices'
     }
   ],
 
@@ -74,27 +74,27 @@ export const GAME_CONFIG = {
 
   // House configurations for village scenes
   HOUSES: {
-    MATH_VILLAGE: [
-      { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍇', subject: 'math' },
-      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'math' },
-      { id: 'numbersort', name: 'Number Sort', type: 'game', x: 550, y: 250, gameScene: null, emoji: '🔢' },
-      { id: 'mathrace', name: 'Math Race', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🏃' },
+    EARNING_VILLAGE: [
+      { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍇', subject: 'earning' },
+      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'earning' },
+      { id: 'chorechallenge', name: 'Chore Challenge', type: 'game', x: 550, y: 250, gameScene: null, emoji: '🧹' },
+      { id: 'lemonadestand', name: 'Lemonade Stand', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🍋' },
       { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 550 },
       { id: 'deco2', name: 'Village House', type: 'decoration', x: 550, y: 550 }
     ],
-    READING_VILLAGE: [
-      { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍓', subject: 'reading' },
-      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'reading' },
-      { id: 'storybuilder', name: 'Story Builder', type: 'game', x: 550, y: 250, gameScene: null, emoji: '📖' },
-      { id: 'letterhunt', name: 'Letter Hunt', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🔤' },
+    SAVING_VILLAGE: [
+      { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍓', subject: 'saving' },
+      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'saving' },
+      { id: 'piggybank', name: 'Piggy Bank', type: 'game', x: 550, y: 250, gameScene: null, emoji: '🐷' },
+      { id: 'goaltracker', name: 'Goal Tracker', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🎯' },
       { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 550 },
       { id: 'deco2', name: 'Village House', type: 'decoration', x: 550, y: 550 }
     ],
-    FINANCE_VILLAGE: [
-      { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍊', subject: 'finance' },
-      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'finance' },
-      { id: 'budgetgame', name: 'Budget Game', type: 'game', x: 550, y: 250, gameScene: null, emoji: '💵' },
-      { id: 'shopkeeper', name: 'Shop Keeper', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🏪' },
+    SPENDING_VILLAGE: [
+      { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍊', subject: 'spending' },
+      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'spending' },
+      { id: 'needsvswants', name: 'Needs vs Wants', type: 'game', x: 550, y: 250, gameScene: null, emoji: '🤔' },
+      { id: 'shopsmart', name: 'Shop Smart', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🛍️' },
       { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 550 },
       { id: 'deco2', name: 'Village House', type: 'decoration', x: 550, y: 550 }
     ]
