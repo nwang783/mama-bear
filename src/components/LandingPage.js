@@ -1,17 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 
 function LandingPage() {
   const navigate = useNavigate();
 
-  const handlePlayClick = () => {
+  const handlePrimaryCta = () => {
     navigate('/game');
   };
 
   const handleExtractClick = () => {
     navigate('/extract-questions');
   };
+
+  // Simple scroll-reveal animations
+  useEffect(() => {
+    const els = document.querySelectorAll('[data-reveal]');
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <div className="page-wrap">
@@ -28,69 +46,84 @@ function LandingPage() {
 
       <div className="landing-page">
         {/* Hero - full screen */}
-        <div className="hero-section">
+        <div className="hero-section" data-reveal>
           <h1 className="title">Mama Bear</h1>
           <h2 className="title-sub">Learning Quest</h2>
           <p className="subtitle">
-            Turn lessons into a retro game adventure for kids
+            Budget. Save. Spend wisely. Money mastery through retro play.
           </p>
           <div className="action-buttons">
-            <button className="pixel-button primary" onClick={handlePlayClick}>
-              Start Game
+            <button className="pixel-button primary" onClick={handlePrimaryCta}>
+              Start Learning for Free →
             </button>
             <button className="pixel-button secondary" onClick={handleExtractClick}>
-              Extract Questions from PDF
+              Upload a PDF →
             </button>
           </div>
         </div>
       </div>
 
-      {/* Sales Content below hero */}
+      {/* Content below hero */}
       <div className="marketing-section">
         <div className="marketing-inner content-sections">
-          {/* Problem/Solution */}
-          <section className="content-section panel">
-            <h2 className="section-title">Learning Shouldn't Feel Like Work</h2>
-            <p className="section-body">
-              Your kids love games. You love seeing them learn. Why choose?
-              <br />
-              EduQuest lets you transform any lesson—from times tables to money math—into an exciting 2D adventure your kids will actually want to play.
-            </p>
+          {/* The Problem */}
+          <section className="content-section panel reveal" data-reveal>
+            <h2 className="section-title">Kids Are Growing Up Financially Unprepared</h2>
+            <ul className="stats-list">
+              <li>
+                18% of 15-year-olds in the U.S. don't understand basics like budgeting or comparison shopping; high school seniors answer only 48% on financial literacy exams.
+              </li>
+              <li>
+                73% of teens want more money education, yet only 23% of children frequently talk about money with their parents.
+              </li>
+            </ul>
+            <div className="source-links">
+              <a href="https://moneyzine.com/personal-finance/financial-literacy-statistics/" target="_blank" rel="noreferrer">US Financial Literacy Statistics 2025</a>
+              <span> • </span>
+              <a href="https://signalskills.com/financial-literacy-statistics/" target="_blank" rel="noreferrer">Financial Literacy Statistics for 2025</a>
+            </div>
           </section>
 
-          {/* How It Works */}
-          <section className="content-section">
-            <h2 className="section-title">How It Works</h2>
+          {/* The Gap */}
+          <section className="content-section panel reveal" data-reveal>
+            <h2 className="section-title">The Gap Hits Hardest Where It Matters Most</h2>
+            <p className="section-body">
+              Low-income, Black, and Hispanic households—and teens in particular—face greater risks from low financial literacy. 40% of students from low-income schools lack core money skills, and only 4% of children from low-income families will break the cycle of poverty. In 2023 alone, low financial literacy cost Americans an estimated $388B.
+            </p>
+            <div className="source-links">
+              <a href="https://worthadvisors.com/financial-literacy-barriers/" target="_blank" rel="noreferrer">Financial Literacy Barriers</a>
+              <span> • </span>
+              <a href="https://www.cnbc.com/amp/2021/05/02/op-ed-why-financial-literacy-needs-to-be-a-national-priority.html" target="_blank" rel="noreferrer">CNBC Op-ed</a>
+              <span> • </span>
+              <a href="https://unitedwaynca.org/blog/financial-literacy-for-youth/" target="_blank" rel="noreferrer">Why Financial Literacy for Teens Matters</a>
+              <span> • </span>
+              <a href="https://moneyzine.com/personal-finance/financial-literacy-statistics/" target="_blank" rel="noreferrer">US Financial Literacy Statistics 2025</a>
+            </div>
+            <p className="section-body emphasize">We can change this. Games make money skills accessible, fun, and repeatable for every child.</p>
+          </section>
+
+          {/* How the app works - based on codebase */}
+          <section className="content-section" data-reveal>
+            <h2 className="section-title">How Mama Bear Works</h2>
             <div className="steps-grid">
               <div className="step-card panel">
                 <div className="step-number">1</div>
-                <h3 className="step-title">Upload Your Content</h3>
-                <p className="step-text">Add questions, answers, and topics you want your kids to learn.</p>
+                <h3 className="step-title">Choose Finance Village</h3>
+                <p className="step-text">Enter the 💰 Finance Village and pick a question set—community sets are fetched from our library, with difficulty badges and stats.</p>
               </div>
               <div className="step-card panel">
                 <div className="step-number">2</div>
-                <h3 className="step-title">We Build the Game</h3>
-                <p className="step-text">Your content instantly becomes mini-games in a fun village world.</p>
+                <h3 className="step-title">Play Mini‑Games</h3>
+                <p className="step-text">Kids learn money concepts while playing retro games like Fruit Collector and Fishing—answer to progress and earn rewards.</p>
               </div>
               <div className="step-card panel">
                 <div className="step-number">3</div>
-                <h3 className="step-title">Watch Them Learn</h3>
-                <p className="step-text">Kids explore villages, play games, and master concepts without realizing they're studying.</p>
+                <h3 className="step-title">Bring Your Own Content</h3>
+                <p className="step-text">Upload a PDF and our AI extracts questions into a playable set in seconds—perfect for lessons on budgeting, saving, and spending.</p>
               </div>
             </div>
           </section>
 
-          {/* Features */}
-          <section className="content-section panel">
-            <h2 className="section-title">Features</h2>
-            <ul className="feature-list">
-              <li>✨ 100% Free - No subscriptions, no hidden costs</li>
-              <li>🎮 Custom Content - Teach exactly what YOUR kids need to learn</li>
-              <li>🌍 Adventure Format - Explore villages, meet characters, earn rewards</li>
-              <li>📚 Any Subject - Math, reading, finance, or create your own</li>
-              <li>⏱️ Quick Setup - Create a full game in under 10 minutes</li>
-            </ul>
-          </section>
         </div>
       </div>
     </div>
