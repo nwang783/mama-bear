@@ -15,9 +15,9 @@ import { db } from './config';
 
 // Cache for question sets to reduce Firebase reads
 const questionSetsCache = {
-  math: { data: null, timestamp: null },
-  reading: { data: null, timestamp: null },
-  finance: { data: null, timestamp: null }
+  earning: { data: null, timestamp: null },
+  saving: { data: null, timestamp: null },
+  spending: { data: null, timestamp: null }
 };
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -26,7 +26,7 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
  * Get top question sets by subject from Firebase
  * Ordered by upvotes, returns top 5
  * 
- * @param {string} subject - Subject type: 'math', 'reading', or 'finance'
+ * @param {string} subject - Subject type: 'earning', 'saving', or 'spending'
  * @param {number} limitCount - Number of sets to fetch (default 5)
  * @returns {Promise<Array>} Array of question set objects
  */

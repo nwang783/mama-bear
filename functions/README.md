@@ -7,14 +7,14 @@ This Firebase function extracts multiple choice questions from PDF files using O
 ## Function: `extract_questions_from_pdf`
 
 ### Description
-Extracts up to 10 multiple choice questions from a PDF file stored in Firebase Storage and creates a question set in one of three "villages" (reading, math, or finance).
+Extracts up to 10 multiple choice questions from a PDF file stored in Firebase Storage and creates a question set in one of three "villages" (earning, saving, or spending).
 
 ### Parameters
 
 ```typescript
 {
-  storage_path: string;  // Path to the PDF in Firebase Storage (e.g., "pdfs/math-questions.pdf")
-  village: "reading" | "math" | "finance";  // Which domain/village to assign the questions to
+  storage_path: string;  // Path to the PDF in Firebase Storage (e.g., "pdfs/earning-questions.pdf")
+  village: "earning" | "saving" | "spending";  // Which domain/village to assign the questions to
 }
 ```
 
@@ -74,8 +74,8 @@ const extractQuestions = httpsCallable(functions, 'extract_questions_from_pdf');
 
 // Call the function
 const result = await extractQuestions({
-  storage_path: 'pdfs/algebra-questions.pdf',
-  village: 'math'
+  storage_path: 'pdfs/earning-basics.pdf',
+  village: 'earning'
 });
 
 console.log(`Created ${result.data.question_count} questions`);
@@ -91,8 +91,8 @@ from firebase_admin import functions
 result = functions.call(
     'extract_questions_from_pdf',
     {
-        'storage_path': 'pdfs/reading-comprehension.pdf',
-        'village': 'reading'
+        'storage_path': 'pdfs/saving-goals.pdf',
+        'village': 'saving'
     }
 )
 
@@ -136,7 +136,7 @@ Each extracted question is stored with the following structure:
 ```typescript
 {
   name: string;                    // Generated from PDF filename
-  village: "reading" | "math" | "finance";
+  village: "earning" | "saving" | "spending";
   question_ids: string[];          // References to question documents
   question_count: number;
   source: {

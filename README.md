@@ -1,14 +1,14 @@
 # 🐻 Mama Bear Learning
 
-A free educational platform for moms to create interactive learning games for their children.
+A free educational platform for teaching children financial literacy through interactive games.
 
 ## Overview
 
-Mama Bear Learning is a hackathon project that allows parents to upload educational content and transform it into engaging 2D games. Children can explore different villages, each focused on a specific subject area:
+Mama Bear Learning is a hackathon project that allows parents to upload educational content and transform it into engaging 2D games. Children can explore different villages, each focused on a specific aspect of financial literacy:
 
-- 📚 **Reading Village** - Literacy and reading comprehension
-- 🔢 **Math Village** - Mathematics and problem-solving
-- 💰 **Finance Village** - Financial literacy and money management
+- 💼 **Earning Village** - Learn about earning money through work and entrepreneurship
+- 🏦 **Saving Village** - Understand saving, goals, and growing your money
+- 🛒 **Spending Village** - Make smart spending choices and budget wisely
 
 ## Tech Stack
 

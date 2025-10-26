@@ -8,7 +8,7 @@ function QuestionExtractor() {
   
   // State management
   const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedVillage, setSelectedVillage] = useState('math');
+  const [selectedVillage, setSelectedVillage] = useState('earning');
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState({ step: '', progress: 0 });
   const [result, setResult] = useState(null);
@@ -16,9 +16,9 @@ function QuestionExtractor() {
 
   // Village options
   const villages = [
-    { value: 'math', label: '🔢 Math', color: '#667eea' },
-    { value: 'reading', label: '📚 Reading', color: '#f093fb' },
-    { value: 'finance', label: '💰 Finance', color: '#4facfe' }
+    { value: 'earning', label: '💼 Earning', color: '#ffe66d' },
+    { value: 'saving', label: '🏦 Saving', color: '#4ecdc4' },
+    { value: 'spending', label: '🛒 Spending', color: '#ff6b6b' }
   ];
 
   // Handle file selection
