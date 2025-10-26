@@ -347,15 +347,16 @@ export default class VillageScene extends Phaser.Scene {
     
     // Check if this house has a game scene
     if (houseConfig.gameScene) {
-      // If this is FruitCollectorScene, show question set selection
-      if (houseConfig.gameScene === 'FruitCollectorScene') {
+      // If this is FruitCollectorScene or FishingScene, show question set selection
+      if (houseConfig.gameScene === 'FruitCollectorScene' || houseConfig.gameScene === 'FishingScene') {
         const subject = houseConfig.subject || this.villageConfig?.id || 'math';
         
         // Launch the question set selection scene
         const sceneData = {
           subject: subject,
           returnScene: this.scene.key,
-          villageConfig: this.villageConfig
+          villageConfig: this.villageConfig,
+          targetGameScene: houseConfig.gameScene  // Pass which game scene to launch
         };
         
         this.scene.start('QuestionSetSelectionScene', sceneData);

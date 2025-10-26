@@ -76,7 +76,7 @@ export const GAME_CONFIG = {
   HOUSES: {
     MATH_VILLAGE: [
       { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍇', subject: 'math' },
-      { id: 'fruitcatch', name: 'Fruit Catch', type: 'game', x: 250, y: 250, gameScene: 'FruitCatchScene', emoji: '🍎' },
+      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'math' },
       { id: 'numbersort', name: 'Number Sort', type: 'game', x: 550, y: 250, gameScene: null, emoji: '🔢' },
       { id: 'mathrace', name: 'Math Race', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🏃' },
       { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 550 },
@@ -84,7 +84,7 @@ export const GAME_CONFIG = {
     ],
     READING_VILLAGE: [
       { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍓', subject: 'reading' },
-      { id: 'wordmatch', name: 'Word Match', type: 'game', x: 250, y: 250, gameScene: null, emoji: '📝' },
+      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'reading' },
       { id: 'storybuilder', name: 'Story Builder', type: 'game', x: 550, y: 250, gameScene: null, emoji: '📖' },
       { id: 'letterhunt', name: 'Letter Hunt', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🔤' },
       { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 550 },
@@ -92,7 +92,7 @@ export const GAME_CONFIG = {
     ],
     FINANCE_VILLAGE: [
       { id: 'fruitcollector', name: 'Fruit Collector', type: 'game', x: 400, y: 350, gameScene: 'FruitCollectorScene', emoji: '🍊', subject: 'finance' },
-      { id: 'coincollector', name: 'Coin Collector', type: 'game', x: 250, y: 250, gameScene: null, emoji: '🪙' },
+      { id: 'fishing', name: 'Fishing Game', type: 'game', x: 250, y: 250, gameScene: 'FishingScene', emoji: '🎣', subject: 'finance' },
       { id: 'budgetgame', name: 'Budget Game', type: 'game', x: 550, y: 250, gameScene: null, emoji: '💵' },
       { id: 'shopkeeper', name: 'Shop Keeper', type: 'game', x: 400, y: 550, gameScene: null, emoji: '🏪' },
       { id: 'deco1', name: 'Village House', type: 'decoration', x: 250, y: 550 },

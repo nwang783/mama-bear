@@ -78,6 +78,51 @@ export default class BootScene extends Phaser.Scene {
       );
     }
 
+    // Load Kenney Fish Pack assets for fishing minigame
+    // Background terrain
+    this.load.image('background_terrain', 
+      'kenney_fish-pack_2/PNG/Default/background_terrain.png'
+    );
+    
+    // Dirt terrain tiles (a-d variants)
+    ['a', 'b', 'c', 'd'].forEach(variant => {
+      this.load.image(`terrain_dirt_${variant}`, 
+        `kenney_fish-pack_2/PNG/Default/terrain_dirt_${variant}.png`
+      );
+      this.load.image(`terrain_dirt_top_${variant}`, 
+        `kenney_fish-pack_2/PNG/Default/terrain_dirt_top_${variant}.png`
+      );
+    });
+    
+    // Fish sprites (outline versions)
+    const fishColors = ['blue', 'green', 'orange', 'brown'];
+    fishColors.forEach(color => {
+      this.load.image(`fish_${color}_outline`, 
+        `kenney_fish-pack_2/PNG/Default/fish_${color}_outline.png`
+      );
+    });
+    
+    // Bubbles (a-c variants)
+    ['a', 'b', 'c'].forEach(variant => {
+      this.load.image(`bubble_${variant}`, 
+        `kenney_fish-pack_2/PNG/Default/bubble_${variant}.png`
+      );
+    });
+    
+    // Seaweed (a-h variants)
+    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].forEach(variant => {
+      this.load.image(`background_seaweed_${variant}`, 
+        `kenney_fish-pack_2/PNG/Default/background_seaweed_${variant}.png`
+      );
+    });
+    
+    // Rocks (a-b variants)
+    ['a', 'b'].forEach(variant => {
+      this.load.image(`background_rock_${variant}`, 
+        `kenney_fish-pack_2/PNG/Default/background_rock_${variant}.png`
+      );
+    });
+
     // Load background music
     this.load.audio('backgroundMusic', 'assets/audio/morning-background.mp3');
   }
