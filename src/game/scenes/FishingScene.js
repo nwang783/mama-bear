@@ -47,8 +47,12 @@ export default class FishingScene extends Phaser.Scene {
   }
 
   create() {
+    // Use full canvas height for world/camera to avoid bottom gap
+    const canvasWidth = this.scale.width || 800;
+    const canvasHeight = this.scale.height || 600;
+
     // Set world bounds
-    this.physics.world.setBounds(0, 0, 800, 450);
+    this.physics.world.setBounds(0, 0, canvasWidth, canvasHeight);
 
     // Create underwater background
     this.createBackground();
@@ -62,8 +66,8 @@ export default class FishingScene extends Phaser.Scene {
     // Display first question
     this.displayQuestion();
 
-    // Setup camera
-    this.cameras.main.setBounds(0, 0, 800, 450);
+    // Setup camera to match full canvas so background fills screen
+    this.cameras.main.setBounds(0, 0, canvasWidth, canvasHeight);
     this.cameras.main.setZoom(1.0);
 
     // Setup pause key
@@ -80,11 +84,17 @@ export default class FishingScene extends Phaser.Scene {
 
   createBackground() {
     const tileSize = 16;
-    const tilesX = Math.ceil(800 / tileSize);
-    const tilesY = Math.ceil(450 / tileSize);
+    const width = this.scale.width || 800;
+    const height = this.scale.height || 600;
+    const tilesX = Math.ceil(width / tileSize);
+    const tilesY = Math.ceil(height / tileSize);
 
-    // Calculate where dirt layers start (bottom 3 tiles: 2 dirt + 1 dirt_top)
-    const dirtStartY = tilesY - 3;
+    // Restore to previous dirt level (bottom 6 tiles: 5 dirt + 1 dirt_top)
+    const dirtStartY = tilesY - 6;
+
+    // Cache water bounds for other systems
+    this.waterTopY = 140; // leave space for question panel/UI
+    this.waterBottomY = dirtStartY * tileSize;
 
     // Fill with water background
     for (let x = 0; x < tilesX; x++) {
@@ -103,7 +113,7 @@ export default class FishingScene extends Phaser.Scene {
       dirtTop.setDepth(-90);
     }
 
-    // Bottom 2 layers of dirt (terrain_dirt_a-d variants)
+    // Bottom 9 layers of dirt (terrain_dirt_a-d variants)
     for (let x = 0; x < tilesX; x++) {
       for (let y = dirtStartY + 1; y < tilesY; y++) {
         const variant = String.fromCharCode(97 + Phaser.Math.Between(0, 3)); // a, b, c, or d
@@ -118,10 +128,11 @@ export default class FishingScene extends Phaser.Scene {
   }
 
   addUnderwaterDecor() {
-    // Add bubbles scattered throughout (avoiding question panel area)
-    for (let i = 0; i < 12; i++) {
-      const bubbleX = Phaser.Math.Between(20, 780);
-      const bubbleY = Phaser.Math.Between(200, 380);
+    const width = this.scale.width || 800;
+    // Add bubbles scattered throughout (avoid question panel and dirt)
+    for (let i = 0; i < 16; i++) {
+      const bubbleX = Phaser.Math.Between(20, width - 20);
+      const bubbleY = Phaser.Math.Between(this.waterTopY + 10, this.waterBottomY - 20);
       const bubbleType = String.fromCharCode(97 + Phaser.Math.Between(0, 2)); // a, b, or c
       
       const bubble = this.add.image(bubbleX, bubbleY, `bubble_${bubbleType}`);
@@ -143,10 +154,10 @@ export default class FishingScene extends Phaser.Scene {
       });
     }
 
-    // Add seaweed at the bottom
+    // Add seaweed sitting on top of the dirt
     for (let i = 0; i < 8; i++) {
-      const seaweedX = Phaser.Math.Between(50, 750);
-      const seaweedY = 410;
+      const seaweedX = Phaser.Math.Between(50, (this.scale.width || 800) - 50);
+      const seaweedY = this.waterBottomY;
       const seaweedType = String.fromCharCode(97 + Phaser.Math.Between(0, 7)); // a-h variants
       
       const seaweed = this.add.image(seaweedX, seaweedY, `background_seaweed_${seaweedType}`);
@@ -164,10 +175,10 @@ export default class FishingScene extends Phaser.Scene {
       });
     }
 
-    // Add rocks
-    for (let i = 0; i < 5; i++) {
-      const rockX = Phaser.Math.Between(50, 750);
-      const rockY = Phaser.Math.Between(350, 420);
+    // Add rocks just above the dirt
+    for (let i = 0; i < 6; i++) {
+      const rockX = Phaser.Math.Between(50, (this.scale.width || 800) - 50);
+      const rockY = this.waterBottomY - Phaser.Math.Between(6, 18);
       const rockType = Phaser.Math.Between(0, 1) === 0 ? 'a' : 'b';
       
       const rock = this.add.image(rockX, rockY, `background_rock_${rockType}`);
@@ -509,6 +520,9 @@ export default class FishingScene extends Phaser.Scene {
     const fishColors = ['blue', 'green', 'orange', 'brown'];
     const letters = ['A', 'B', 'C', 'D'];
 
+    const minY = this.waterTopY + 30;
+    const maxY = this.waterBottomY - 30;
+
     this.currentQuestion.choices.forEach((choice, index) => {
       // Randomly select a fish color
       const fishColor = Phaser.Math.RND.pick(fishColors);
@@ -516,20 +530,20 @@ export default class FishingScene extends Phaser.Scene {
       
       // Start fish off-screen on the left, at varied heights
       const startX = -50;
-      const y = Phaser.Math.Between(220, 380);
+      const y = Phaser.Math.Between(minY, maxY);
       
       // Create fish sprite
       const fishSprite = this.add.image(startX, y, fishKey);
-      fishSprite.setScale(2.0);
+      fishSprite.setScale(1.2); // Reduced from 2.0 to 1.2
       fishSprite.setDepth(150);
 
       // Add letter text on fish
       const letterText = this.add.text(startX, y, letters[index], {
-        fontSize: '32px',
+        fontSize: '20px', // Reduced from 32px to 20px
         fontFamily: 'Arial',
         color: '#000000',
         stroke: '#ffffff',
-        strokeThickness: 4,
+        strokeThickness: 3, // Reduced from 4 to 3
         fontStyle: 'bold'
       });
       letterText.setOrigin(0.5);
@@ -601,9 +615,9 @@ export default class FishingScene extends Phaser.Scene {
         f.text.y = f.sprite.y;
 
         // If fish swims off right side, wrap to left
-        if (f.sprite.x > 850) {
+        if (f.sprite.x > (this.scale.width || 800) + 50) {
           f.sprite.x = -50;
-          f.sprite.y = Phaser.Math.Between(220, 380);
+          f.sprite.y = Phaser.Math.Between(this.waterTopY + 30, this.waterBottomY - 30);
           f.text.x = f.sprite.x;
           f.text.y = f.sprite.y;
         }
