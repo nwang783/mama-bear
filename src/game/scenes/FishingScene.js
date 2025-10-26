@@ -76,6 +76,9 @@ export default class FishingScene extends Phaser.Scene {
     // Create pause menu (hidden initially)
     this.createPauseMenu();
 
+    // Start game music
+    this.startGameMusic();
+
     // Start timer after a brief delay
     this.time.delayedCall(500, () => {
       this.startTimer();
@@ -834,8 +837,40 @@ export default class FishingScene extends Phaser.Scene {
     gameOverContainer.add(retryButton);
   }
 
+  startGameMusic() {
+    // Stop background music and start game music
+    const bgMusic = this.game.registry.get('backgroundMusic');
+    if (bgMusic && bgMusic.isPlaying) {
+      bgMusic.pause();
+    }
+
+    // Start game music
+    this.gameMusic = this.sound.add('gameMusic', {
+      loop: true,
+      volume: 0.4
+    });
+    this.gameMusic.play();
+  }
+
+  stopGameMusic() {
+    // Stop game music and resume background music
+    if (this.gameMusic) {
+      this.gameMusic.stop();
+      this.gameMusic.destroy();
+      this.gameMusic = null;
+    }
+
+    const bgMusic = this.game.registry.get('backgroundMusic');
+    if (bgMusic && !bgMusic.isPlaying) {
+      bgMusic.resume();
+    }
+  }
+
   returnToVillage() {
     console.log(`Returning to ${this.returnScene}...`);
+    
+    // Stop game music
+    this.stopGameMusic();
     
     // Fade out and return to the village scene
     this.cameras.main.fade(500, 0, 0, 0);

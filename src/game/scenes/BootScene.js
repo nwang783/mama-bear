@@ -125,6 +125,7 @@ export default class BootScene extends Phaser.Scene {
 
     // Load background music
     this.load.audio('backgroundMusic', 'assets/audio/morning-background.mp3');
+    this.load.audio('gameMusic', 'assets/audio/Space-Jazz-game-soundtrack.mp3');
   }
 
   create() {
