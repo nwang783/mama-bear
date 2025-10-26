@@ -38,59 +38,93 @@ export default class ChatBotNPC extends Phaser.GameObjects.Container {
   }
 
   createChatBotSprite() {
-    // Draw a chatbot cat with a distinct look (lighter color, headset/antenna)
+    // Warm tabby palette
+    const FUR = 0xd4a373;
+    const FUR_SHADE = 0xb07d4f;
+    const INNER_EAR = 0xf2cda0;
+    const OUTLINE = 0x5c4033;
+    const EYE_WHITE = 0xffffff;
+    const EYE_PUPIL = 0x1b1b1b;
+    const ACCENT = 0xffd700;
+
+    // Shadow
+    const shadow = this.scene.add.graphics();
+    shadow.fillStyle(0x000000, 0.25);
+    shadow.fillEllipse(0, 6, 28, 8);
+
     const g = this.scene.add.graphics();
     g.setDepth(0);
 
-    // Body (lighter blue-gray)
-    g.fillStyle(0x88c0d0, 1);
-    g.fillRoundedRect(-12, -6, 24, 14, 4);
+    // Body
+    g.fillStyle(FUR, 1);
+    g.fillRoundedRect(-12, -6, 24, 14, 6);
+    g.lineStyle(2, OUTLINE, 1);
+    g.strokeRoundedRect(-12, -6, 24, 14, 6);
 
     // Head
-    g.fillRoundedRect(-8, -16, 16, 14, 4);
+    g.fillStyle(FUR, 1);
+    g.fillRoundedRect(-8, -16, 16, 14, 6);
+    g.lineStyle(2, OUTLINE, 1);
+    g.strokeRoundedRect(-8, -16, 16, 14, 6);
 
-    // Ears with antenna tips (teal accent)
-    g.fillStyle(0x88c0d0, 1);
+    // Ears (with inner color)
+    g.fillStyle(FUR, 1);
     g.fillTriangle(-8, -16, -4, -16, -7, -22);
     g.fillTriangle(8, -16, 4, -16, 7, -22);
-    g.fillStyle(0x4ecdc4, 1);
-    g.fillCircle(-7, -22, 2);
-    g.fillCircle(7, -22, 2);
+    g.fillStyle(INNER_EAR, 1);
+    g.fillTriangle(-7.2, -16, -4.8, -16, -6.8, -20);
+    g.fillTriangle(7.2, -16, 4.8, -16, 6.8, -20);
 
-    // Eyes (bright cyan)
-    g.fillStyle(0x4ecdc4, 1);
-    g.fillRect(-5, -12, 2, 2);
-    g.fillRect(3, -12, 2, 2);
+    // Tail
+    g.fillStyle(FUR, 1);
+    g.fillRoundedRect(10, -4, 10, 4, 2);
+    g.lineStyle(2, OUTLINE, 1);
+    g.strokeRoundedRect(10, -4, 10, 4, 2);
 
-    // Mouth (small smile)
-    g.lineStyle(1, 0x4ecdc4, 1);
+    // Stripes
+    g.lineStyle(1, FUR_SHADE, 1);
+    g.beginPath();
+    g.moveTo(-6, -3); g.lineTo(-2, -3);
+    g.moveTo(2, -2); g.lineTo(6, -2);
+    g.strokePath();
+
+    // Eyes
+    g.fillStyle(EYE_WHITE, 1);
+    g.fillRect(-5, -12, 3, 3);
+    g.fillRect(2, -12, 3, 3);
+    g.fillStyle(EYE_PUPIL, 1);
+    g.fillRect(-4, -11, 1, 1);
+    g.fillRect(3, -11, 1, 1);
+
+    // Mouth
+    g.lineStyle(1, OUTLINE, 1);
     g.beginPath();
     g.arc(0, -8, 3, 0, Math.PI, false);
     g.strokePath();
 
     // Chat bubble icon above head
     const bubbleIcon = this.scene.add.graphics();
-    bubbleIcon.fillStyle(0xffffff, 0.9);
+    bubbleIcon.fillStyle(0x11121b, 0.9);
     bubbleIcon.fillRoundedRect(-6, -32, 12, 8, 2);
     bubbleIcon.fillTriangle(-2, -24, 2, -24, 0, -20);
-    bubbleIcon.lineStyle(1, 0x4ecdc4, 1);
+    bubbleIcon.lineStyle(1, ACCENT, 1);
     bubbleIcon.strokeRoundedRect(-6, -32, 12, 8, 2);
     
     // "..." inside bubble
-    bubbleIcon.fillStyle(0x4ecdc4, 1);
+    bubbleIcon.fillStyle(ACCENT, 1);
     for (let i = -3; i <= 3; i += 3) {
       bubbleIcon.fillCircle(i, -28, 1);
     }
 
-    this.add([g, bubbleIcon]);
+    this.add([shadow, g, bubbleIcon]);
     this.catGraphics = g;
     this.bubbleGraphics = bubbleIcon;
 
     // Animate bubble pulsing
     this.scene.tweens.add({
       targets: bubbleIcon,
-      alpha: 0.5,
-      duration: 800,
+      alpha: 0.6,
+      duration: 900,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut'
