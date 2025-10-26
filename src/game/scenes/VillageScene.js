@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import Player from '../entities/Player';
 import CatNPC from '../entities/CatNPC';
+import ChatBotNPC from '../entities/ChatBotNPC';
 import { GAME_CONFIG } from '../config/gameConfig';
 
 /**
@@ -15,6 +16,8 @@ export default class VillageScene extends Phaser.Scene {
     this.villageConfig = null;
     this.housesConfig = [];
     this.cats = [];
+    this.chatBot = null;
+    this.nearbyChatBot = false;
   }
 
   init(data) {
@@ -54,6 +57,9 @@ export default class VillageScene extends Phaser.Scene {
 
     // Add a couple of wandering cats in each village
     this.spawnCats(3);
+
+    // Add chatbot NPC in a prominent location
+    this.spawnChatBot();
 
     // Listen for house entrance events
     this.events.on('houseEntered', this.handleHouseEntered, this);
@@ -283,6 +289,14 @@ export default class VillageScene extends Phaser.Scene {
       this.nearbyHouse.enterHouse();
     }
 
+    // Check proximity to chatbot
+    this.checkChatBotProximity();
+
+    // Check for chatbot interaction
+    if (this.player && this.nearbyChatBot && this.player.isInteractKeyPressed()) {
+      this.chatBot.openChat();
+    }
+
     // Check for exit portal collision
     this.checkExitPortalCollision();
   }
@@ -400,5 +414,19 @@ export default class VillageScene extends Phaser.Scene {
       const cat = new CatNPC(this, x, y);
       this.cats.push(cat);
     }
+  }
+
+  spawnChatBot() {
+    // Place chatbot in a prominent, central location (near player spawn but slightly offset)
+    const x = GAME_CONFIG.VILLAGE_SCENE.PLAYER_START_X + 80;
+    const y = GAME_CONFIG.VILLAGE_SCENE.PLAYER_START_Y - 100;
+    this.chatBot = new ChatBotNPC(this, x, y);
+  }
+
+  checkChatBotProximity() {
+    if (!this.player || !this.chatBot) return;
+
+    const playerPos = this.player.getPosition();
+    this.nearbyChatBot = this.chatBot.checkPlayerProximity(playerPos.x, playerPos.y);
   }
 }
